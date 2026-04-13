@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Registration Card</title>
+    <link rel="stylesheet" href="/static/css/password.css">
+
+</head>
+<body>
+<th:block layout:fragment="content">
+    <section class="content mt-2">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline card-outline-tabs">
+                        <div class="card-header p-0 border-bottom-0">
+                            <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="custom-tabs-duplicate-card-tab" data-toggle="pill"
+                                       href="#custom-tabs-duplicate-card" role="tab"
+                                       aria-controls="custom-tabs-duplicate-card"
+                                       aria-selected="true"><i class="fas fa-certificate"></i> Issue Duplicate Card</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" onclick="getChangeMobileNumberLogs()"
+                                       id="custom-tabs-change-mobileNo-tab" data-toggle="pill"
+                                       href="#custom-tabs-change-mobileNo" role="tab"
+                                       aria-controls="custom-tabs-change-mobileNo" aria-selected="false"><i
+                                            class="nav-icon fas fa-phone"></i> Change Mobile
+                                        Number</a>
+                                </li>
+
+
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="custom-tabs-four-tabContent">
+                                <div class="tab-pane fade active show" id="custom-tabs-duplicate-card" role="tabpanel"
+                                     aria-labelledby="custom-tabs-duplicate-card-tab">
+                                    <div>
+                                        <h4>
+                                            Click the button below to issue a duplicate card request.
+                                        </h4>
+                                        <h6 class="text-primary">
+                                            Note: An OTP will send to your registered mobile number
+                                        </h6>
+                                        <div class="justify-content-center">
+                                            <button onclick="requestDuplicateCard()" class="btn btn-primary"
+                                                    id="issue-button">
+                                                <i class="fa fa-key" aria-hidden="true"></i> Issue
+                                            </button>
+                                            <br><br>
+                                            <h6 class="text-danger" id="reg-msg"></h6>
+                                            <h6 class="text-primary" id="otp-timer"></h6>
+                                            <br>
+                                            <div id="otp-section" style="display: none;">
+                                                <input type="text" id="otp-input" class="form-control"
+                                                       placeholder="Enter OTP">
+                                                <br>
+                                                <button onclick="validateOtpAndDownload()" class="btn btn-success"><i
+                                                        class="fa fa-download" aria-hidden="true"></i> Download
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="custom-tabs-change-mobileNo" role="tabpanel"
+                                     aria-labelledby="custom-tabs-change-mobileNo-tab">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="card card-default">
+                                                <div class="card-body">
+                                                    <div>
+                                                        <h6 class="text-bold text-danger">
+                                                            * Please note that you can change your mobile number only
+                                                            once every 90 days.
+                                                        </h6>
+                                                        <span id="error_msg" style="color: red; display: none;"></span>
+                                                        <span id="success_msg"
+                                                              style="color: green; display: none;"></span>
+                                                    </div>
+                                                    <form id="changeMobileNumberForm">
+                                                        <div class="form-group">
+                                                            <label for="mobileNumber">Current Mobile Number</label>
+                                                            <div class="input-group">
+                                                                <input type="tel" class="form-control input"
+                                                                       id="mobileNumber"
+                                                                       name="mobileNumber"
+                                                                       placeholder="Enter current mobile number">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="newMobileNumber">New Mobile Number</label>
+                                                            <div class="input-group">
+                                                                <input type="tel" class="form-control input"
+                                                                       id="newMobileNumber"
+                                                                       name="newMobileNumber"
+                                                                       placeholder="Enter new mobile number">
+                                                            </div>
+                                                        </div>
+                                                        <button type="button" class="btn btn-primary"
+                                                                id="sendOTPButton">Send OTP
+                                                        </button>
+                                                        <div style="padding-bottom: 20px">
+                                                            <span id="otpMessage"></span>
+                                                            <span id="timer"></span>
+                                                        </div>
+                                                        <div class="form-group" id="confirmNewMobileNumberInput"
+                                                             hidden="hidden">
+                                                            <label for="confirmNewMobileNumber">Confirm New Mobile
+                                                                Number</label>
+                                                            <div class="input-group">
+                                                                <input type="tel" class="form-control input"
+                                                                       id="confirmNewMobileNumber"
+                                                                       name="confirmNewMobileNumber"
+                                                                       placeholder="Confirm New Mobile Number">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group" id="OTPinput" hidden="hidden">
+                                                            <label for="otp">OTP</label>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control input" id="otp"
+                                                                       name="otp"
+                                                                       placeholder="Enter OTP">
+                                                            </div>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary"
+                                                                id="changePhoneNumberButton"
+                                                                hidden="hidden">
+                                                            Change Phone Number
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card card-default">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">
+                                                        <i class="fas fa-bullhorn"></i>
+                                                        History
+                                                    </h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <ul class="list-group" s id="changeLogList">
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</th:block>
+<th:block layout:fragment="script">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
+    <script src="/static/js/common-validation.js"></script>
+    <script src="/static/js/reg-card.js"></script>
+    <script src="/static/js/change-mobile-number.js"></script>
+</th:block>
+</body>

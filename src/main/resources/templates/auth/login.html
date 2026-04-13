@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html layout:decorate="~{auth/auth-template}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sign In</title>
+</head>
+<body>
+<th:block layout:fragment="auth-form">
+    <p class="text-center text-bold" style="margin-top: -10px; color: #0d3e6f">Sign in to continue</p>
+    <form th:id="loginForm" th:action="@{/login}" method="post">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="input-wrapper input-group">
+                    <input type="text" id="custCode" name="custCode" class="input form-control" placeholder="">
+                    <span class="placeholder"> Customer Code</span>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <i class="fa fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="input-wrapper input-group">
+                    <input type="password" id="password" name="password" class="input form-control input_pass"
+                           placeholder="">
+                    <span class="placeholder"> Password</span>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <button class="show-password toggle-password" type="button"><i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div th:replace="~{shared/captcha}"></div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="input-group">
+                    <div class="input-group-append">
+                        <div class="input-group-text" style="background: white">
+                            <i class="fas fa-equals"></i>
+                        </div>
+                    </div>
+                    <input type="text" id="captcha_form" name="captcha_form"
+                           class="input form-control form_input_captcha"
+                           placeholder="">
+                    <span class="placeholder" style="left: 41px">Enter captcha</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+        <span th:id="error_msg" th:if="${param.error}" style="color: red;">
+          Invalid username and password.</span>
+                <span th:id="error_msg" th:if="${param.logout}" style="color: red;">
+          You have been logged out.</span>
+                <span th:id="error_msg" th:if="${param.expired}" style="color: red;">
+          Your session expired, login again.</span>
+            </div>
+            <div class="col-md-6 float-md-right">
+                <button type="submit" class="btn btn-primary btn-block sign-in-btn"><i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </div>
+        </div>
+    </form>
+</th:block>
+<th:block layout:fragment="quick-links">
+    <div class="col-12">
+        <p class="mb-0">
+            <a href="/signup" class="btn btn-outline-danger btn-xs text-center">Register here</a>
+        </p>
+    </div>
+    <div class="col-12">
+        <p class="mb-1">
+            <a class="btn btn-outline-primary btn-xs  text-center" href="/forgot-password">Forgot password?</a>
+        </p>
+    </div>
+</th:block>
+<!-- /.login-box -->
+<th:block layout:fragment="script">
+    <script src="/static/js/password.js"></script>
+    <script src="/static/js/login.js"></script>
+</th:block>
+</body>
+</html>

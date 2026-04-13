@@ -1,0 +1,181 @@
+<div th:fragment="auth-stepper(formType)">
+  <form id="signUpForm" action="/signup/activate" method="POST">
+    <div class="bs-stepper linear">
+      <div class="bs-stepper-header" role="tablist">
+
+        <div class="step active" data-target="#cust-info-part">
+          <button type="button" class="step-trigger" role="tab" aria-controls="cust-info-part"
+                  id="cust-info-part-trigger" aria-selected="true">
+            <span class="bs-stepper-circle">1</span>
+            <span class="bs-stepper-label">Customer Info</span>
+
+          </button>
+        </div>
+        <div class="line"></div>
+        <div class="step" data-target="#otp-part">
+          <button type="button" class="step-trigger" role="tab" aria-controls="otp-part" id="otp-part-trigger"
+                  aria-selected="false" disabled="disabled">
+            <span class="bs-stepper-circle">2</span>
+            <span class="bs-stepper-label">OTP</span>
+          </button>
+        </div>
+        <div class="line"></div>
+        <div class="step" data-target="#verify-part">
+          <button type="button" class="step-trigger" role="tab" aria-controls="verify-part" id="verify-part-trigger"
+                  aria-selected="false" disabled="disabled">
+            <span class="bs-stepper-circle">3</span>
+            <span class="bs-stepper-label">Password</span>
+          </button>
+        </div>
+      </div>
+      <div class="bs-stepper-content">
+
+        <div id="cust-info-part" class="content active dstepper-block" role="tabpanel"
+             aria-labelledby="logins-part-trigger">
+          <p class="text-center text-bold text-danger errMsg" id="custErrMsg"></p>
+          <div th:if="${formType == 'signup'}" class="row">
+            <div  class="col-md-6 mb-3">
+              <div class="input-wrapper input-group">
+                <input type="text" id="custCode" name="custCode" class="input form-control" placeholder="">
+                <span class="placeholder"> Customer Code</span>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <i class="fa fa-user"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <div class="input-wrapper input-group">
+                <input type="text" id="mobileNo" name="mobileNo" class="input form-control input_pass"
+                       placeholder="">
+                <span class="placeholder"> Mobile No</span>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <i class="fa fa-phone"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div th:if="${formType == 'forgot-password'}" class="row">
+            <div  class="col-md-12 mb-3">
+              <div class="input-wrapper input-group">
+                <input type="text" id="forgotCust" name="forgotCust" class="input form-control" placeholder="">
+                <span class="placeholder"> Customer Code</span>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <i class="fa fa-user"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div th:replace="~{shared/captcha}"></div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <div class="input-wrapper input-group">
+                <div class="input-group-append">
+                  <div class="input-group-text" style="background: white">
+                    <i class="fas fa-equals"></i>
+                  </div>
+                </div>
+                <input type="text" id="captcha_form" name="captcha_form" class="input form-control form_input_captcha"
+                       placeholder="">
+                <span class="placeholder" style="left: 41px"> Enter captcha</span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+            </div>
+            <div class="col-md-6 mb-3">
+              <button th:if="${formType == 'signup'}" class="btn btn-primary btn-block btn-next text-bold" id="start-reg">
+                <i class="far fa-arrow-alt-circle-right fa-lg"></i> Start Registration
+              </button>
+              <button th:if="${formType == 'forgot-password'}" class="btn btn-primary btn-block btn-next text-bold" id="start-recov">
+                <i class="far fa-arrow-alt-circle-right fa-lg"></i> Recover Password
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="otp-part" class="content" role="tabpanel" aria-labelledby="otp-part-trigger">
+          <p class="text-center text-bold text-success errMsg" id="otpMsg">Please collect the OTP from your online
+            registered mobile number.</p>
+
+          <div class="row mb-3">
+            <div class="col-12">
+              <div class="input-wrapper input-group" id="otpTimerMsg">
+                <input type="text" id="otp" name="otp" class="input form-control" style=""
+                       placeholder="">
+                <span class="placeholder"> OTP</span>
+                <div class="input-group-append ">
+                  <div class="input-group-text bg-danger">
+                    <span id="otpTimer" class="float-right"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="text-center text-bold text-purple">** Note: You can't make more than 3 requests per day.</p>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+            </div>
+            <div class="col-md-6 mb-3">
+              <button class="btn btn-primary btn-block btn-next text-bold" id="otp-submit">
+                <i class="fas fa-step-forward"></i> Next
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="verify-part" class="content" role="tabpanel" aria-labelledby="verify-part-trigger">
+          <p class="text-center text-bold text-success errMsg" id="verifyMsg"></p>
+          <p class="text-center text-bold text-info">The password should be at least 8 characters long and contain at
+            least one letter and one digit.</p>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <div class="input-wrapper input-group">
+                <input type="password" id="password" name="password" class="input form-control input_pass"
+                       placeholder="">
+                <span class="placeholder"> New Password</span>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <button class="show-password toggle-password" type="button"><i class="fa fa-eye"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <div class="input-wrapper input-group">
+                <input type="password" id="password2" name="password2" class="input form-control input_pass"
+                       placeholder="">
+                <span class="placeholder"> Confirm Password</span>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <button class="show-password toggle-password" type="button"><i class="fa fa-eye"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+            </div>
+            <div class="col-md-6 mb-3">
+              <button th:if="${formType == 'signup'}" class="btn btn-primary btn-block btn-submit text-bold" id="signupBtn">
+                <i class="fas fa-sign-in-alt"></i> Submit
+              </button>
+              <button th:if="${formType == 'forgot-password'}" class="btn btn-primary btn-block btn-submit btn-next text-bold" id="forgotBtn">
+                <i class="fas fa-sign-in-alt"></i> Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

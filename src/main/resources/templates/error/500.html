@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Error | Internal Server Error</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-6">
+          <h1>Error</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item active">Error 500</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row align-items-center error-page">
+        <div class="col-md-6 mb-2">
+          <img src="/static/images/error/500.svg" class="img-fluid" alt="500 Internal Server Error">
+        </div>
+        <div class="col-md-6 text-center">
+          <h3><i class="fas fa-lock text-danger"></i> Internal Server Error</h3>
+          <p>
+            Oops! Something went wrong. Please try again later.<br>
+            <a th:href="@{/}" class="btn btn-outline-primary mt-3"><i class="fas fa-home"></i> Back to Home</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</th:block>
+</body>
+</html>

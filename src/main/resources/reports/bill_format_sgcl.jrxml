@@ -1,0 +1,1734 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.3.final using JasperReports Library version 6.20.3-415f9428cffdb6805c6f85bbb29ebaf18813a2ab  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="testBillReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="88454cfa-63a9-4d35-a90a-69fba1c89656">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="720"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="db.jrdax"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cust_code" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="bill_month" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="bill_year" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="IMAGE_DIR" class="java.lang.String"/>
+	<parameter name="zone" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="cust_type_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="copy_name" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select
+    cust_code code,
+    CUST_NAME,
+    cust_type,
+case when cust_type_id = 7 then 'Domestic Bill' when cust_type_id = 703 then 'Commercial Bill' else 'Industrial Bill' end bill_cat_name,
+    cust_type_id "cust_type_id",
+    PERIOD_FROM,
+    PERIOD_to,
+    "bill_number",
+    PHONE_NO,is_bulk,
+    ZONE,
+    ACTUAL_MINIMUM_LOAD,
+    max_load,
+   montlhy_approved_load,
+   MINIMUM_GAS_LOAD,
+   load_per_hour,
+address,
+demand_charge,
+    LAST_DATE_PAYMENT,
+    ISSUE_DATE,
+    PRE_CUST_CODE,
+ REGEXP_REPLACE (ADJUST_SURCHARGE_DESCRIPTION,
+                              '(, for\d|, for[^[:alnum:]]|, for$)',
+                              ' : ',
+                              1,
+                              0,
+                              'i') ADJUST_SURCHARGE_DESCRIPTION,
+    consumption,
+    MIXED_CONSUMPTION,
+    AVG_CONSUMPTION,
+    ADJUST_CONSUMPTION,
+    EVC_ADJUSTED_CONSUMPTION,
+    TOTAL_CONSUMPTION,
+    gas_bill,
+    AVG_BILL,
+    MIN_BILL,
+    adjustment,
+    METER_CHARGE_AMOUNT,
+    SURCHARGE_AMOUNT,
+    VAT_EXEMPTION,
+    VAT_AMOUNT,
+    ADVANCE_AMOUNT,
+    CURRENT_TOTAL,
+    "bill_month",
+    bill_month_sub,
+    bill_year,
+    main_q.gas_rate_dist.gas_rate gas_rate,
+    main_q.gas_rate_dist.gas_rate_vat gas_rate_vat,
+    defualter_date,
+    spelOut,
+    "dep",
+nvl((SELECT max(EXEMPTED_PERCENTAGE)
+  FROM VAT_EXEMPTION_INFO
+ WHERE     cust_code = $P{cust_code}
+       AND (    TO_DATE ('01/' || TRIM (TO_CHAR (bill_month_sub, '09')) || '/' || bill_year,
+                         'dd/mm/yyyy') <=
+                   TRUNC (
+                      NVL (
+                         end_date,
+                         LAST_DAY (
+                            TO_DATE (
+                                  '01/'
+                               || TRIM (TO_CHAR (bill_month_sub, '09'))
+                               || '/'
+                               || bill_year,
+                               'dd/mm/yyyy'))))
+            AND TRUNC (start_date) <=
+                   LAST_DAY (
+                      TO_DATE (
+                         '01/' || TRIM (TO_CHAR (bill_month_sub, '09')) || '/' || bill_year,
+                         'dd/mm/yyyy')))),0)
+vat_exp_percent,
+    COMMENTS adj_foot_note,
+         BILL_F.CAT_NAME
+ from (
+(
+--main query
+SELECT C.CODE cust_code,
+       C.CUST_NAME,ADJUST_SURCHARGE_DESCRIPTION,
+       cty.remarks cust_type,
+       cty.id cust_type_id,
+       cmv.PERIOD_FROM,
+       cmv.PERIOD_to,
+       cb.id "bill_number",
+       C.PHONE_NO,
+       C.ZONE,
+       CB.ACTUAL_MINIMUM_LOAD,
+       cv.max_load,
+   cv.montlhy_approved_load,
+   cv.MINIMUM_GAS_LOAD,
+   cv.load_per_hour,
+cv.c_address as address,nvl(c.is_bulk,0) is_bulk,
+cb.demand_charge,
+       CB.LAST_DATE_PAYMENT,
+       CB.ISSUE_DATE,
+       C.PRE_CUST_CODE,
+       nvl(cmv.consumption,0) consumption,
+       nvl(cmv.MIXED_CONSUMPTION,0) MIXED_CONSUMPTION,
+       nvl(cmv.AVG_CONSUMPTION,0) AVG_CONSUMPTION,
+case when (cb.bill_month || cb.bill_year) < to_number('082021') then
+       nvl(cmv.ADJUST_CONSUMPTION,0) else  nvl(cmv.ADJUST_CONSUMPTION,0)+nvl(cmv.EVC_ADJUSTED_CONSUMPTION,0) end ADJUST_CONSUMPTION,
+       nvl(cmv.EVC_ADJUSTED_CONSUMPTION,0) EVC_ADJUSTED_CONSUMPTION,
+case when (cb.bill_month || cb.bill_year) < to_number('082021') then
+       nvl(cmv.TOTAL_CONSUMPTION,0) else nvl(cmv.TOTAL_CONSUMPTION,0)+ nvl(cmv.EVC_ADJUSTED_CONSUMPTION,0) end TOTAL_CONSUMPTION,
+       CB.BILL_AMOUNT gas_bill,
+       CB.AVG_BILL,
+       CB.MIN_BILL,
+       (CB.ADJUST_GAS_BILL + CB.ADJUST_METER_RENT + CB.ADJUST_OTHER)
+          adjustment,
+       CB.METER_CHARGE_AMOUNT,
+       CB.SURCHARGE_AMOUNT,
+       CB.VAT_EXEMPTION,
+       round(nvl(cb.VAT_AMOUNT,0),0) VAT_AMOUNT,
+       CB.ADVANCE_AMOUNT,
+       CB.CURRENT_TOTAL,
+       substr(MD.MONTH_NAME,0,3) || '-' || cb.bill_year "bill_month",
+       cb.bill_month bill_month_sub,
+       cb.bill_year,
+       (SELECT get_gas_rate_date_wise4report (
+                     '01/'
+                  || TO_CHAR (CB.BILL_MONTH, '09')
+                  || '/'
+                  || CB.BILL_YEAR,
+                  LAST_DAY (
+                     TO_DATE (
+                           '01/'
+                        || TO_CHAR (CB.BILL_MONTH, '09')
+                        || '/'
+                        || CB.BILL_YEAR,
+                        'dd/mm/yyyy')),
+                  C.CUST_TYPE_ID)
+          FROM DUAL)
+          gas_rate_dist,
+    ((cb.issue_date+cty.DAYS_FOR_DEFUALTER)-1) defualter_date,
+       NVL ( (SELECT spel_out (cb.CURRENT_TOTAL) FROM DUAL), 'Zero') spelOut,
+(SELECT SUBSTR(DEPARTMENT,7,5) FROM CUSTOMER_ZONE WHERE zone_name=c.zone) "dep",
+cb.COMMENTS,
+                  C.IS_ACTIVE
+  FROM cust c
+       JOIN customer_bill cb ON c.code = cb.cust_code
+       JOIN month_day md ON md.id = cb.bill_month
+       join CUST_ADDRESS_VIEW cv ON cv.code = cb.cust_code
+       JOIN
+       CUST_METER_READING_SUM_VIEW cmv
+          ON     cmv.CUST_CODE = cb.cust_code
+             AND cb.bill_month = cmv.bill_month
+             AND cb.bill_year = cmv.bill_year
+       join cust_type cty on c.cust_type_id=cty.id
+WHERE c.zone=$P{zone}
+ and (  $P{cust_code} is null or c.code =$P{cust_code})
+ AND cb.bill_month = $P{bill_month}
+ and c.cust_type_id=$P{cust_type_id}
+
+ AND cb.bill_year = $P{bill_year}   )
+
+union all
+-- Applied Disconnected customers
+(SELECT C.CODE cust_code,
+       C.CUST_NAME,ADJUST_SURCHARGE_DESCRIPTION,
+       cty.remarks cust_type,
+       cty.id cust_type_id,
+       TO_DATE (
+             '01'
+          || '/'
+          || cb.BILL_MONTH
+          || '/'
+          || TO_CHAR (cb.bill_year, '9999'),
+          'dd/mm/yyyy')
+          PERIOD_FROM,
+       LAST_DAY (
+          TO_DATE ('01' || '/' || cb.BILL_MONTH || '/' || cb.bill_year,
+                   'dd/mm/yyyy'))
+          PERIOD_to,
+       cb.id "bill_number",
+       C.PHONE_NO,
+       C.ZONE,
+       CB.ACTUAL_MINIMUM_LOAD,
+           cv.max_load,
+   cv.montlhy_approved_load,
+   cv.MINIMUM_GAS_LOAD,
+   cv.load_per_hour,
+cv.c_address as address,nvl(c.is_bulk,0) is_bulk,
+cb.demand_charge,
+       CB.LAST_DATE_PAYMENT,
+       CB.ISSUE_DATE,
+       C.PRE_CUST_CODE,
+
+       0 consumption,
+       0 MIXED_CONSUMPTION,
+       0 AVG_CONSUMPTION,
+       0 ADJUST_CONSUMPTION,
+       0 EVC_ADJUSTED_CONSUMPTION,
+       0 TOTAL_CONSUMPTION,
+       CB.BILL_AMOUNT gas_bill,
+       CB.AVG_BILL,
+       CB.MIN_BILL,
+       (CB.ADJUST_GAS_BILL + CB.ADJUST_METER_RENT + CB.ADJUST_OTHER)
+          adjustment,
+       CB.METER_CHARGE_AMOUNT,
+       CB.SURCHARGE_AMOUNT,
+       CB.VAT_EXEMPTION,
+       round(nvl(cb.VAT_AMOUNT,0),0) VAT_AMOUNT,
+       CB.ADVANCE_AMOUNT,
+       CB.CURRENT_TOTAL,
+       substr(MD.MONTH_NAME,0,3) || '-' || cb.bill_year "bill_month",
+       cb.bill_month bill_month_sub,
+       cb.bill_year,
+       (SELECT get_gas_rate_date_wise4report (
+                     '01/'
+                  || TO_CHAR (CB.BILL_MONTH, '09')
+                  || '/'
+                  || CB.BILL_YEAR,
+                  LAST_DAY (
+                     TO_DATE (
+                           '01/'
+                        || TO_CHAR (CB.BILL_MONTH, '09')
+                        || '/'
+                        || CB.BILL_YEAR,
+                        'dd/mm/yyyy')),
+                  C.CUST_TYPE_ID)
+          FROM DUAL)
+          gas_rate_dist,
+    ((cb.issue_date+cty.DAYS_FOR_DEFUALTER)-1) defualter_date,
+       NVL ( (SELECT spel_out (cb.CURRENT_TOTAL) FROM DUAL), 'Zero') spelOut,
+(SELECT SUBSTR(DEPARTMENT,7,5) FROM CUSTOMER_ZONE WHERE zone_name=c.zone) "dep",
+cb.COMMENTS,
+                  C.IS_ACTIVE
+  FROM cust c JOIN DISCONNECTION_DETAIL DD ON C.CODE=DD.CUST_CODE
+       JOIN customer_bill cb ON c.code = cb.cust_code
+join CUST_ADDRESS_VIEW cv ON cv.code = cb.cust_code
+       JOIN month_day md ON md.id = cb.bill_month
+       join cust_type cty on c.cust_type_id=cty.id
+WHERE c.zone=$P{zone}
+ and ( $P{cust_code} is null or c.code =$P{cust_code})
+ AND cb.bill_month = $P{bill_month}
+ and c.cust_type_id=$P{cust_type_id}
+       AND C.CONNECTION_STATUS_ID = 10396
+
+ AND cb.bill_year = $P{bill_year}
+ AND TRIM (
+             TO_CHAR (TO_DATE (DD.DISCONNECTION_DATE_TIME, 'dd/mm/yy'), 'YYYY')
+          || TO_CHAR (TO_DATE (DD.DISCONNECTION_DATE_TIME, 'dd/mm/yy'), 'mm'))=
+       TRIM (
+             TO_CHAR (TO_DATE ('1/'||$P{bill_month} ||'/'||$P{bill_year}, 'dd/mm/yy'), 'YYYY')
+          || TO_CHAR (TO_DATE ('1/'||$P{bill_month}||'/'||$P{bill_year}, 'dd/mm/yy'), 'mm') )
+
+)
+
+
+union all
+--layoff related customers
+(SELECT C.CODE cust_code,
+       C.CUST_NAME,ADJUST_SURCHARGE_DESCRIPTION,
+       cty.remarks cust_type,
+       cty.id cust_type_id,
+       NULL PERIOD_FROM,
+       NULL PERIOD_to,
+       cb.id "bill_number",
+       C.PHONE_NO,
+       C.ZONE,
+       0 ACTUAL_MINIMUM_LOAD,
+     0 max_load,
+   0 montlhy_approved_load,
+   0 MINIMUM_GAS_LOAD,
+   0 load_per_hour,
+   cv.c_address as address,nvl(c.is_bulk,0) is_bulk,
+0 demand_charge,
+       CB.LAST_DATE_PAYMENT,
+       CB.ISSUE_DATE,
+       C.PRE_CUST_CODE,
+
+       0 consumption,
+       0 MIXED_CONSUMPTION,
+       0 AVG_CONSUMPTION,
+       0 ADJUST_CONSUMPTION,
+       0 EVC_ADJUSTED_CONSUMPTION,
+       0 TOTAL_CONSUMPTION,
+       CB.BILL_AMOUNT gas_bill,
+       CB.AVG_BILL,
+       CB.MIN_BILL,
+       (CB.ADJUST_GAS_BILL + CB.ADJUST_METER_RENT + CB.ADJUST_OTHER)
+          adjustment,
+       CB.METER_CHARGE_AMOUNT,
+       CB.SURCHARGE_AMOUNT,
+       CB.VAT_EXEMPTION,
+       ROUND (NVL (cb.VAT_AMOUNT, 0), 0) VAT_AMOUNT,
+       CB.ADVANCE_AMOUNT,
+       CB.CURRENT_TOTAL,
+       SUBSTR (MD.MONTH_NAME, 0, 3) || '-' || cb.bill_year "bill_month",
+       cb.bill_month bill_month_sub,
+       cb.bill_year,
+       (SELECT get_gas_rate_date_wise4report (
+                     '01/'
+                  || TO_CHAR (CB.BILL_MONTH, '09')
+                  || '/'
+                  || CB.BILL_YEAR,
+                  LAST_DAY (
+                     TO_DATE (
+                           '01/'
+                        || TO_CHAR (CB.BILL_MONTH, '09')
+                        || '/'
+                        || CB.BILL_YEAR,
+                        'dd/mm/yyyy')),
+                  C.CUST_TYPE_ID)
+          FROM DUAL)
+          gas_rate_dist,
+       ( (cb.issue_date + cty.DAYS_FOR_DEFUALTER) - 1) defualter_date,
+       NVL ( (SELECT spel_out (cb.CURRENT_TOTAL) FROM DUAL), 'Zero') spelOut,
+       (SELECT SUBSTR (DEPARTMENT, 7, 5)
+          FROM CUSTOMER_ZONE
+         WHERE zone_name = c.zone)
+          "dep",
+cb.COMMENTS,
+C.IS_ACTIVE
+  FROM cust c
+       JOIN customer_bill cb ON c.code = CB.CUST_CODE
+join CUST_ADDRESS_VIEW cv ON cv.code = cb.cust_code
+       JOIN cust_type cty ON cty.id = c.cust_type_id
+       JOIN month_day md ON md.id = cb.bill_month
+       JOIN LAYOFF LA ON LA.CUST_CODE = C.CODE
+ WHERE     cb.bill_year || TRIM (TO_CHAR (cb.bill_month, '09')) NOT IN
+              (SELECT (   TO_CHAR (TO_DATE (LD.LAYOFF_DATE_TIME, 'dd/mm/YY'),
+                                   'YYYY')
+                       || TO_CHAR (
+                             TO_DATE (LD.LAYOFF_DATE_TIME, 'dd/mm/yyyy'),
+                             'mm'))
+                 FROM LAYOFF L
+                      JOIN LAYOFF_DETAIL LD ON L.ID = LD.LAYOFF_ID
+                      JOIN cust c ON c.code = l.cust_code
+                WHERE L.CUST_CODE = cb.cust_code)
+     and  c.zone=$P{zone}
+       AND C.CONNECTION_STATUS_ID = 12680
+ and ( $P{cust_code} is null or c.code =$P{cust_code} )
+ AND cb.bill_month = $P{bill_month}
+ and c.cust_type_id=$P{cust_type_id}
+
+ AND cb.bill_year =$P{bill_year}
+       AND LA.STATUS <> 'Layoff Closed')
+) main_q
+JOIN (SELECT bf.id, BF.CAT_NAME, BF.IS_ACTIVE
+                 FROM BILL_FORMAT_CATEGORIES bf) bill_f
+            ON BILL_F.IS_ACTIVE = main_q.IS_ACTIVE
+
+order by pre_cust_code,bill_f.id]]>
+	</queryString>
+	<field name="CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CODE"/>
+		<property name="com.jaspersoft.studio.field.label" value="CODE"/>
+	</field>
+	<field name="CUST_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CUST_NAME"/>
+		<property name="com.jaspersoft.studio.field.label" value="CUST_NAME"/>
+	</field>
+	<field name="CUST_TYPE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CUST_TYPE"/>
+		<property name="com.jaspersoft.studio.field.label" value="CUST_TYPE"/>
+	</field>
+	<field name="BILL_CAT_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="BILL_CAT_NAME"/>
+		<property name="com.jaspersoft.studio.field.label" value="BILL_CAT_NAME"/>
+	</field>
+	<field name="cust_type_id" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="cust_type_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="cust_type_id"/>
+	</field>
+	<field name="PERIOD_FROM" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="PERIOD_FROM"/>
+		<property name="com.jaspersoft.studio.field.label" value="PERIOD_FROM"/>
+	</field>
+	<field name="PERIOD_TO" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="PERIOD_TO"/>
+		<property name="com.jaspersoft.studio.field.label" value="PERIOD_TO"/>
+	</field>
+	<field name="bill_number" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="bill_number"/>
+		<property name="com.jaspersoft.studio.field.label" value="bill_number"/>
+	</field>
+	<field name="PHONE_NO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="PHONE_NO"/>
+		<property name="com.jaspersoft.studio.field.label" value="PHONE_NO"/>
+	</field>
+	<field name="IS_BULK" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="IS_BULK"/>
+		<property name="com.jaspersoft.studio.field.label" value="IS_BULK"/>
+	</field>
+	<field name="ZONE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ZONE"/>
+		<property name="com.jaspersoft.studio.field.label" value="ZONE"/>
+	</field>
+	<field name="ACTUAL_MINIMUM_LOAD" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="ACTUAL_MINIMUM_LOAD"/>
+		<property name="com.jaspersoft.studio.field.label" value="ACTUAL_MINIMUM_LOAD"/>
+	</field>
+	<field name="MAX_LOAD" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MAX_LOAD"/>
+		<property name="com.jaspersoft.studio.field.label" value="MAX_LOAD"/>
+	</field>
+	<field name="MONTLHY_APPROVED_LOAD" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MONTLHY_APPROVED_LOAD"/>
+		<property name="com.jaspersoft.studio.field.label" value="MONTLHY_APPROVED_LOAD"/>
+	</field>
+	<field name="MINIMUM_GAS_LOAD" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MINIMUM_GAS_LOAD"/>
+		<property name="com.jaspersoft.studio.field.label" value="MINIMUM_GAS_LOAD"/>
+	</field>
+	<field name="LOAD_PER_HOUR" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="LOAD_PER_HOUR"/>
+		<property name="com.jaspersoft.studio.field.label" value="LOAD_PER_HOUR"/>
+	</field>
+	<field name="ADDRESS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ADDRESS"/>
+		<property name="com.jaspersoft.studio.field.label" value="ADDRESS"/>
+	</field>
+	<field name="DEMAND_CHARGE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="DEMAND_CHARGE"/>
+		<property name="com.jaspersoft.studio.field.label" value="DEMAND_CHARGE"/>
+	</field>
+	<field name="LAST_DATE_PAYMENT" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="LAST_DATE_PAYMENT"/>
+		<property name="com.jaspersoft.studio.field.label" value="LAST_DATE_PAYMENT"/>
+	</field>
+	<field name="ISSUE_DATE" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="ISSUE_DATE"/>
+		<property name="com.jaspersoft.studio.field.label" value="ISSUE_DATE"/>
+	</field>
+	<field name="PRE_CUST_CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="PRE_CUST_CODE"/>
+		<property name="com.jaspersoft.studio.field.label" value="PRE_CUST_CODE"/>
+	</field>
+	<field name="ADJUST_SURCHARGE_DESCRIPTION" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ADJUST_SURCHARGE_DESCRIPTION"/>
+		<property name="com.jaspersoft.studio.field.label" value="ADJUST_SURCHARGE_DESCRIPTION"/>
+	</field>
+	<field name="CONSUMPTION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="CONSUMPTION"/>
+		<property name="com.jaspersoft.studio.field.label" value="CONSUMPTION"/>
+	</field>
+	<field name="MIXED_CONSUMPTION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MIXED_CONSUMPTION"/>
+		<property name="com.jaspersoft.studio.field.label" value="MIXED_CONSUMPTION"/>
+	</field>
+	<field name="AVG_CONSUMPTION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="AVG_CONSUMPTION"/>
+		<property name="com.jaspersoft.studio.field.label" value="AVG_CONSUMPTION"/>
+	</field>
+	<field name="ADJUST_CONSUMPTION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="ADJUST_CONSUMPTION"/>
+		<property name="com.jaspersoft.studio.field.label" value="ADJUST_CONSUMPTION"/>
+	</field>
+	<field name="EVC_ADJUSTED_CONSUMPTION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="EVC_ADJUSTED_CONSUMPTION"/>
+		<property name="com.jaspersoft.studio.field.label" value="EVC_ADJUSTED_CONSUMPTION"/>
+	</field>
+	<field name="TOTAL_CONSUMPTION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="TOTAL_CONSUMPTION"/>
+		<property name="com.jaspersoft.studio.field.label" value="TOTAL_CONSUMPTION"/>
+	</field>
+	<field name="GAS_BILL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="GAS_BILL"/>
+		<property name="com.jaspersoft.studio.field.label" value="GAS_BILL"/>
+	</field>
+	<field name="AVG_BILL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="AVG_BILL"/>
+		<property name="com.jaspersoft.studio.field.label" value="AVG_BILL"/>
+	</field>
+	<field name="MIN_BILL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="MIN_BILL"/>
+		<property name="com.jaspersoft.studio.field.label" value="MIN_BILL"/>
+	</field>
+	<field name="ADJUSTMENT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="ADJUSTMENT"/>
+		<property name="com.jaspersoft.studio.field.label" value="ADJUSTMENT"/>
+	</field>
+	<field name="METER_CHARGE_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="METER_CHARGE_AMOUNT"/>
+		<property name="com.jaspersoft.studio.field.label" value="METER_CHARGE_AMOUNT"/>
+	</field>
+	<field name="SURCHARGE_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="SURCHARGE_AMOUNT"/>
+		<property name="com.jaspersoft.studio.field.label" value="SURCHARGE_AMOUNT"/>
+	</field>
+	<field name="VAT_EXEMPTION" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="VAT_EXEMPTION"/>
+		<property name="com.jaspersoft.studio.field.label" value="VAT_EXEMPTION"/>
+	</field>
+	<field name="VAT_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="VAT_AMOUNT"/>
+		<property name="com.jaspersoft.studio.field.label" value="VAT_AMOUNT"/>
+	</field>
+	<field name="ADVANCE_AMOUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="ADVANCE_AMOUNT"/>
+		<property name="com.jaspersoft.studio.field.label" value="ADVANCE_AMOUNT"/>
+	</field>
+	<field name="CURRENT_TOTAL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="CURRENT_TOTAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="CURRENT_TOTAL"/>
+	</field>
+	<field name="bill_month" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="bill_month"/>
+		<property name="com.jaspersoft.studio.field.label" value="bill_month"/>
+	</field>
+	<field name="BILL_MONTH_SUB" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="BILL_MONTH_SUB"/>
+		<property name="com.jaspersoft.studio.field.label" value="BILL_MONTH_SUB"/>
+	</field>
+	<field name="BILL_YEAR" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="BILL_YEAR"/>
+		<property name="com.jaspersoft.studio.field.label" value="BILL_YEAR"/>
+	</field>
+	<field name="GAS_RATE" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="GAS_RATE"/>
+		<property name="com.jaspersoft.studio.field.label" value="GAS_RATE"/>
+	</field>
+	<field name="GAS_RATE_VAT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="GAS_RATE_VAT"/>
+		<property name="com.jaspersoft.studio.field.label" value="GAS_RATE_VAT"/>
+	</field>
+	<field name="DEFUALTER_DATE" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="DEFUALTER_DATE"/>
+		<property name="com.jaspersoft.studio.field.label" value="DEFUALTER_DATE"/>
+	</field>
+	<field name="SPELOUT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="SPELOUT"/>
+		<property name="com.jaspersoft.studio.field.label" value="SPELOUT"/>
+	</field>
+	<field name="dep" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="dep"/>
+		<property name="com.jaspersoft.studio.field.label" value="dep"/>
+	</field>
+	<field name="VAT_EXP_PERCENT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="VAT_EXP_PERCENT"/>
+		<property name="com.jaspersoft.studio.field.label" value="VAT_EXP_PERCENT"/>
+	</field>
+	<field name="ADJ_FOOT_NOTE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ADJ_FOOT_NOTE"/>
+		<property name="com.jaspersoft.studio.field.label" value="ADJ_FOOT_NOTE"/>
+	</field>
+	<field name="CAT_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CAT_NAME"/>
+		<property name="com.jaspersoft.studio.field.label" value="CAT_NAME"/>
+	</field>
+	<background>
+		<band height="802" splitType="Stretch">
+			<image hAlign="Center">
+				<reportElement mode="Opaque" x="51" y="326" width="455" height="376" uuid="42c96db8-4afd-4834-ba69-6b211df0c42f"/>
+				<imageExpression><![CDATA[$P{IMAGE_DIR}+File.separator+"h_blur_20_pix.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<detail>
+		<band height="717" splitType="Stretch">
+			<staticText>
+				<reportElement x="18" y="504" width="206" height="16" uuid="8c90eac8-c11f-4f54-a546-b3ea886d794f"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Adjustment (Tk.) (Meter/Gsa/Other)]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="139" y="610" width="417" height="15" uuid="74321c1f-ab52-4f78-968f-dcc0f43cb065"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SPELOUT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="17" y="382" width="206" height="14" uuid="2831ce8a-f9d4-42c5-847b-62c628de9823"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Actual Consumption (A)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="449" width="206" height="14" uuid="9936107a-5741-4d03-83bd-da9490c4625c"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Billing Consumption (E-F)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="408" width="206" height="14" uuid="e642b45c-b056-4386-b727-75501eb88fb7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Adjusted Consumption (EVC/Others) (C)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="534" width="206" height="14" uuid="96d7bf45-0daa-496d-a60f-71a3bfc808aa"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Surcharge ( Tk. ) ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="520" width="206" height="14" uuid="a01db65b-9655-4cfe-a025-ddf65f2ff8fd"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Meter/CMSRent ( Tk. )]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="610" width="139" height="15" uuid="fa81dcd7-43fa-47f6-b2a6-247d85807bd9"/>
+				<box leftPadding="5">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Total Bill Amount ( In Word ) :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="550" width="205" height="14" uuid="abfb22b7-488e-4631-9b3f-b1286713c405"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Total Bill Amount ( Tk. ) ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="382" width="13" height="14" uuid="f910c4c8-00d9-43a4-8b7a-6ee54378599f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="476" width="206" height="14" uuid="f3b4402e-9ae5-48bb-ac82-d70e06c87606"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gas Bill  ( TK. ) :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="395" width="206" height="14" uuid="bfd68565-3a03-4682-b7c8-0cbf341c9f1d"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Average Consumption (B)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="436" width="206" height="14" uuid="a2d04cec-4cb0-4793-b30d-d0eb107df130"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Mixed Consumption (F)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="423" width="206" height="14" uuid="198935b0-2fc3-4a61-a0ff-3d56c6c2ed18"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Total Consumption (E = A+B+C)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="18" y="564" width="206" height="14" uuid="17945ec8-90a2-4678-97ac-9faf740bd19e"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="9" isBold="false" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["VAT Exemption "+($F{VAT_EXP_PERCENT}.compareTo(new BigDecimal("0"))==0?"( Tk. )":$F{VAT_EXP_PERCENT}+"% ( Tk. )")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="18" y="594" width="206" height="16" uuid="351ca9bf-d08c-4ab4-96ae-78c6e751625b"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Payable Bill Amount (Tk.)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="462" width="206" height="14" uuid="170c2776-261f-4648-8916-5d520d203abc"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Rate Per Unit ( TK. ) :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="18" y="578" width="206" height="14" uuid="ccd66daf-7a73-45eb-a93e-15d1f054ef30"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="false" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Advance Adjustment (Tk.)]]></text>
+			</staticText>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement x="236" y="395" width="309" height="14" uuid="4b504663-844b-4f06-a6cc-2dc8b7346fce"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AVG_CONSUMPTION}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement x="236" y="504" width="234" height="16" uuid="2c40987b-3756-4399-99af-0805522b5005"/>
+				<box rightPadding="5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ADJ_FOOT_NOTE}==null ?"":"Foot Notes: "+$F{ADJ_FOOT_NOTE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement x="236" y="449" width="309" height="14" uuid="10ce9b65-3e20-4734-8b59-9933ef728b6d"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TOTAL_CONSUMPTION}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="237" y="564" width="309" height="14" uuid="e79c7825-eb90-4a39-9630-5250f4bc2f53"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VAT_EXEMPTION}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##,##0.00;" isBlankWhenNull="true">
+				<reportElement x="237" y="594" width="309" height="16" uuid="0e973e95-1c19-42ef-8142-bf7ba602c3af"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CURRENT_TOTAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement x="236" y="462" width="309" height="14" uuid="a375acc3-25ef-4d18-bd4d-78b1f61785a1"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GAS_RATE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="471" y="504" width="75" height="16" uuid="383aadaa-4a59-4f11-8ada-bbb1e333eb0d"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ADJUSTMENT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="481" y="534" width="65" height="14" uuid="f5db1917-5fea-4195-955c-acea1069d092"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SURCHARGE_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="236" y="476" width="309" height="14" uuid="85d34530-f68c-4e66-b0bd-dcf59a3ea09a"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GAS_BILL}.add($F{VAT_EXEMPTION})]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement x="236" y="408" width="309" height="14" uuid="66daffaa-a71f-41fd-a6d2-73c57e0c4cb9"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ADJUST_CONSUMPTION}.add($F{EVC_ADJUSTED_CONSUMPTION})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="237" y="520" width="309" height="14" uuid="95ac685b-2eaa-4ab7-9a48-0862584ffdb6"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{METER_CHARGE_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement x="236" y="436" width="309" height="14" uuid="7aef871a-f1f6-4eb9-98f0-86093cc7713e"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MIXED_CONSUMPTION}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="237" y="578" width="309" height="14" uuid="07dc15f7-b877-4eb5-b3ad-b587f865d076"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GAS_BILL}.add($F{MIN_BILL}).add($F{ADJUSTMENT}).add($F{METER_CHARGE_AMOUNT}).add($F{SURCHARGE_AMOUNT}).subtract($F{CURRENT_TOTAL}).compareTo(new BigDecimal("0"))==-1?0:$F{GAS_BILL}.add($F{MIN_BILL}).add($F{ADJUSTMENT}).add($F{METER_CHARGE_AMOUNT}).add($F{SURCHARGE_AMOUNT}).subtract($F{CURRENT_TOTAL})]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement x="236" y="423" width="309" height="14" uuid="8c9aa10e-2f13-4537-b553-c908cabddfd0"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TOTAL_CONSUMPTION}.add($F{MIXED_CONSUMPTION})]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00" isBlankWhenNull="true">
+				<reportElement x="236" y="382" width="309" height="14" uuid="9ebda3f8-23a6-4008-8c16-966a69169e0c"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CONSUMPTION}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="223" y="476" width="13" height="14" uuid="5cd2ff5f-c86d-4644-9384-122fd09cf392"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="462" width="13" height="14" uuid="e91d8898-3fca-461d-b805-c23e4424c26b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="449" width="13" height="14" uuid="626dd4f2-f9a3-4f40-8f1a-d72ee766a3d6"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="423" width="13" height="14" uuid="11fbe2a0-d487-4c91-a2ab-8f68038532dc"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="408" width="13" height="14" uuid="87feb121-7c68-44ec-bc5d-51bb7a059f1d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="395" width="13" height="14" uuid="51155e3f-4746-4404-b46d-aea2123528fe"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="224" y="504" width="13" height="16" uuid="99e8994b-cf1c-4870-85ee-41591f0cabcd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="550" width="13" height="14" uuid="4fa7baca-f472-4135-93ee-67ba94129690"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="564" width="13" height="14" uuid="a3db2c38-c300-42fd-8b5d-cef9f76c4aac"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="594" width="13" height="16" uuid="7e6a0d99-f9ad-4a04-bed3-650e3e30cfd3"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="578" width="13" height="14" uuid="690dd8e5-673a-492a-8016-186e81351676"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="224" y="520" width="13" height="14" uuid="8ea272e0-72e2-49a2-b8ff-4cc3fcfb4a36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="534" width="13" height="14" uuid="fe0c3109-94a4-4bbc-968d-7d49485f05ee"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement x="236" y="550" width="309" height="14" uuid="fb758cab-2d74-4d25-8513-d41aa61e8a29"/>
+				<box rightPadding="5">
+					<topPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{GAS_BILL}.add($F{MIN_BILL}).add($F{ADJUSTMENT}).add($F{METER_CHARGE_AMOUNT}).add($F{SURCHARGE_AMOUNT}).add($F{VAT_EXEMPTION}).add($F{DEMAND_CHARGE})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="18" y="490" width="206" height="14" uuid="34e05487-8c5c-4cfb-907f-d37cefc66c06"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Demand Charge(Tk.)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="490" width="13" height="14" uuid="8ba1ba8b-feeb-40da-aa65-0d1b9c7d06e7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="625" width="83" height="12" uuid="c1edd7d8-0831-4aa1-a265-d67ce627c4c0"/>
+				<box leftPadding="5">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Including VAT Tk]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="85" y="625" width="215" height="12" uuid="cd24a13d-351f-4490-816b-23f670fdd188"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VAT_AMOUNT}+"     @ "+$F{GAS_RATE_VAT}+" Tk/CM"]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="238" y="490" width="308" height="14" uuid="272019fa-bd61-469c-9b82-cd43246ed7db"/>
+				<box rightPadding="5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEMAND_CHARGE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="674" width="555" height="43" uuid="3d4ab10b-f6ba-49a2-949a-e8addd02b998"/>
+				<box leftPadding="5" rightPadding="5"/>
+				<textElement textAlignment="Justified">
+					<font size="8" isBold="false" isItalic="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<text><![CDATA[N.B. :
+1. Surcharge will be applicable as per rule after the Last Date of payment .
+2. If this bill is not paid by                                                         the line will be disconnected. No further notice will be issued.
+    The bill will be treated as final notice for disconnection .]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yy">
+				<reportElement x="101" y="688" width="100" height="20" uuid="ebb07969-bb69-4638-9ff5-23a413447f9b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DEFUALTER_DATE}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement mode="Opaque" x="0" y="242" width="555" height="36" uuid="0573b5bd-95d6-4eff-a383-ebe065d4396e"/>
+				<subreportParameter name="BILL_MONTH_SUB">
+					<subreportParameterExpression><![CDATA[$P{bill_month}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="CUST_CODE">
+					<subreportParameterExpression><![CDATA[$F{CODE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="BILL_YEAR">
+					<subreportParameterExpression><![CDATA[$P{bill_year}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} +File.separator+ "bill_format_metered_subreport.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="0" y="206" width="134" height="13" uuid="e8990747-ef2e-44d1-8837-d42bb66c5315"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[Customer Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="219" width="134" height="13" uuid="f40a6934-faf0-4be9-aca7-9d7fbc485c92"/>
+				<textElement verticalAlignment="Top">
+					<font size="9"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[Customer Address]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="146" y="206" width="407" height="13" uuid="7878edad-2eac-4704-adeb-2631eb6e5c58"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CUST_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="146" y="219" width="408" height="23" uuid="fba4f57b-132a-40e0-b18a-9fd52ef235ce"/>
+				<box leftPadding="0"/>
+				<textElement verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ADDRESS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="134" y="206" width="12" height="13" uuid="780bc15c-5273-4764-9940-f9d90d0c09a1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="219" width="12" height="13" uuid="8eb6380f-c17e-44bf-b34f-184d055c93f4"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Double"/>
+					<leftPen lineWidth="0.0" lineStyle="Double"/>
+					<bottomPen lineWidth="0.0" lineStyle="Double"/>
+					<rightPen lineWidth="0.0" lineStyle="Double"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="126" width="134" height="13" uuid="8991dbf5-5340-44cd-b85c-b9e965b3df16"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[Bill Number]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="146" y="165" width="154" height="13" uuid="dfe301d5-5097-44e2-be15-493a21f231da"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CODE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="139" width="134" height="13" uuid="3fedf5a0-2719-4312-afc9-87b5d47924c5"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[Issue Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="125" width="128" height="13" uuid="97771724-2ace-4023-b477-2037d01d292b"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="9" isBold="false"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[Monthly Approved Load(CM)]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="438" y="125" width="68" height="13" uuid="b448084b-93e1-4a73-908b-04fccdc80a0d"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MONTLHY_APPROVED_LOAD}.compareTo(new BigDecimal("0"))==0?"-":$F{MONTLHY_APPROVED_LOAD}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="146" y="99" width="154" height="13" uuid="3ece6b85-30a2-4cc6-842e-9bf6b5f6af30"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bill_month}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="113" width="134" height="13" uuid="6ea936d1-8620-4196-aae0-6420acf27447"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[Bill Period]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="99" width="12" height="13" uuid="921d9a81-26c6-4eff-b966-e262eb0f51d0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="113" width="12" height="13" uuid="3a4d6ca2-8693-41d1-a247-d15054b613b0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="146" y="139" width="154" height="13" uuid="2ec81ed0-f41e-491f-9ea7-f8941d20b4c1"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ISSUE_DATE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="152" width="134" height="13" uuid="b9c5c4c9-39bf-4010-a8a3-a102e75a29a7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[Last Date of Payment]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="146" y="152" width="154" height="13" uuid="2dc9e3ba-403f-4874-ae59-1bfaf6b2c78e"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LAST_DATE_PAYMENT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="99" width="134" height="13" uuid="a1d84e1b-57dc-491d-baed-d36d43ddee7c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[Bill Month]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="146" y="126" width="154" height="13" uuid="17f683ed-5ade-4657-8c0d-bbbafe18cc8a"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{bill_number}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="165" width="134" height="13" uuid="a22affd1-a047-4687-a7bb-8c749fe23840"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[Customer Code]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="310" y="99" width="234" height="17" uuid="506c8295-e736-43ff-865b-26bd1573ca31"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CUST_TYPE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="134" y="126" width="12" height="13" uuid="7d8e68da-1707-465a-8f10-026a1ae4be3f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="139" width="12" height="13" uuid="10d70587-c2e5-4494-9ab7-a3425019321b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="152" width="12" height="13" uuid="b50d8277-f13e-4777-958c-167ec214786d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="165" width="12" height="13" uuid="4e1db81e-c0fc-4a6a-adcd-67235c94d8f7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="193" width="134" height="13" uuid="c181e495-ee8f-441c-8db0-549160462327"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[Previous Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="193" width="12" height="13" uuid="ecefb873-6cbf-47a4-ae61-107398c81d23"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="146" y="193" width="154" height="13" uuid="4ec3ad73-bd07-4fb0-a66b-e7833cdee9d3"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRE_CUST_CODE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="310" y="138" width="128" height="13" uuid="8714217a-e968-4845-9c33-e1f466646748"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="9" isBold="false"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[Minimum Load ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="438" y="138" width="68" height="13" uuid="71f07b35-82bf-494d-a094-627ff8795edb"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MINIMUM_GAS_LOAD}.compareTo(new BigDecimal("0"))==0?"-":$F{MINIMUM_GAS_LOAD}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="146" y="113" width="154" height="13" uuid="8edb7245-14c2-4d4f-b06a-3fdc7accf875"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{PERIOD_FROM}).toString()+" - "+new SimpleDateFormat("dd/MM/yyyy").format($F{PERIOD_TO}).toString()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="518" y="138" width="10" height="13" uuid="53ed0a84-7c93-4b0a-83d0-b2d8bed32809"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[M]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="534" y="138" width="10" height="13" uuid="81cd6140-e681-4af2-93b0-4539582d58f9"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="506" y="138" width="12" height="13" uuid="3ebcc90f-2a5d-4056-a7c7-0e907d8ded09"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="528" y="138" width="6" height="13" uuid="f4ec2b8c-2905-4dc1-b9d6-09c807836684"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="151" width="128" height="13" uuid="1c0d5511-cf66-484f-81db-21bced23d6ca"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="9" isBold="false"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[Load Per Hour]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="164" width="128" height="13" uuid="566c0c2c-dbf3-4771-a734-d6d21f468a32"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="9" isBold="false"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[Daily Working Hour]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="177" width="128" height="13" uuid="8cdbd625-4748-4754-b3dd-7cbae60b5a7d"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="9" isBold="false"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[Max Load]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="438" y="164" width="106" height="13" uuid="0de4f706-76c3-4b8b-9a25-58050fef3c7c"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+					<paragraph leftIndent="3"/>
+				</textElement>
+				<text><![CDATA[-]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="179" width="133" height="13" uuid="af145653-2033-487a-9fe0-d1529c5b9c01"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[Customer Mobile]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="179" width="12" height="13" uuid="4982eda9-da8c-4594-9355-635f8437cf8c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="146" y="179" width="154" height="13" uuid="10ba2a11-b27b-46e9-b8f9-23e9c461a734"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PHONE_NO}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="438" y="151" width="68" height="13" uuid="45c75e34-ce35-46be-a182-35e3a767a671"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{LOAD_PER_HOUR}.compareTo(new BigDecimal("0"))==0?"-":$F{LOAD_PER_HOUR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="506" y="151" width="12" height="13" uuid="60e1da70-fa4a-46b3-a3f8-9c670b6b144b"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="518" y="151" width="10" height="13" uuid="32c23403-d343-41e0-961b-5b68af0a14fe"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[M]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="528" y="151" width="6" height="13" uuid="02d7a664-391e-436c-863c-d9c8e89dcfe7"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="534" y="151" width="10" height="13" uuid="97fba12c-f118-4e35-8a38-7d1652adb78a"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[)]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="438" y="177" width="68" height="13" uuid="0612d70e-642d-412e-9901-08772e98cff6"/>
+				<box>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MAX_LOAD}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="506" y="177" width="12" height="13" uuid="74042b47-5b60-4304-9294-18934bed2365"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="518" y="177" width="10" height="13" uuid="68eca829-0009-479e-b536-da56340a0c39"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[M]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="528" y="177" width="6" height="13" uuid="63ea80ce-837f-4af6-ba27-e25d5133c1e6"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="534" y="177" width="10" height="13" uuid="d8078a10-689e-4594-910f-01e55fc4034a"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[)]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="468" y="62" width="85" height="13" uuid="1b721fdb-b832-42d0-969c-3667d3470679"/>
+				<box rightPadding="0">
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CAT_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="1" y="56" width="553" height="5" uuid="11817f24-340f-4dec-8d40-2fcc02d59698"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isUnderline="false"/>
+					<paragraph leftIndent="4" spacingBefore="2"/>
+				</textElement>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="79" width="438" height="13" uuid="d3647d5b-b9ef-42d7-a499-c987aa77e5b6"/>
+				<subreportParameter name="zone_name">
+					<subreportParameterExpression><![CDATA[$F{ZONE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}+File.separator+"bill_format_sgcl_subreport1.jasper"]]></subreportExpression>
+			</subreport>
+			<image>
+				<reportElement x="28" y="0" width="49" height="56" uuid="8974484e-c40c-4569-a54e-b4cdb31c3f27"/>
+				<imageExpression><![CDATA[$P{IMAGE_DIR}+File.separator+"h.png"]]></imageExpression>
+			</image>
+			<subreport>
+				<reportElement x="88" y="0" width="350" height="56" uuid="c887f7f0-05d9-4936-a48d-fa4ce8c9df8c"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR}  +File.separator+ "report_title.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="528" y="125" width="6" height="13" uuid="1dd6cff6-2342-4270-954d-61b176c7ee84"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[3]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="518" y="125" width="10" height="13" uuid="96eaeaab-396a-4f1f-8c34-c999fdba61a4"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[M]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="534" y="125" width="10" height="13" uuid="7b737111-c761-4569-8a0e-21eba8945ade"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="506" y="125" width="12" height="13" uuid="8e13e9c5-e8ad-469c-b3c2-89a4697ab0b5"/>
+				<box>
+					<topPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[(]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="223" y="436" width="13" height="14" uuid="a9011738-bdcc-4278-9dcd-2b8707253499"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="368" width="555" height="15" uuid="4806c4ff-5c7e-4e84-a2b1-61ccc72da14e"/>
+				<box leftPadding="5">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bill Description]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="238" y="534" width="243" height="16" uuid="6273bdcb-3627-45f2-b5d7-6cedab0e47da"/>
+				<box rightPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="6"/>
+					<paragraph leftIndent="1" rightIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ADJUST_SURCHARGE_DESCRIPTION}==null?"":"( "+$F{ADJUST_SURCHARGE_DESCRIPTION}+" )"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="62" width="86" height="13" uuid="b81a9155-b66a-4308-81d7-8fe7e369536d"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Printed from Portal]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="101" y="61" width="350" height="15" uuid="cbc8af7b-7c02-4c9c-a20a-a5d48e036fd6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{BILL_CAT_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="12">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="12" uuid="029ef12c-dd33-4a40-b996-dd943b9ba7d0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[This is a computer generated bill and does not require any signature]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

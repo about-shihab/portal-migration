@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Create Complain</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bootstrap-4@5.0.27/bootstrap-4.min.css">
+</head>
+<body>
+<th:block layout:fragment="content">
+  <section class="content mt-2">
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-md-12">
+          <div class="card card-primary card-outline">
+            <div class="card-header">
+              <h3 class="card-title text-primary">
+                <i class="fas fa-comment"></i>
+                Create Complain
+              </h3>
+            </div>
+            <div class="card-body">
+              <!--/*@thymesVar id="isImpersonating" type="java.lang.Boolean"*/-->
+              <div th:if="${isImpersonating}" class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                You are currently impersonating a user. You cannot submit a complaint while impersonating.
+              </div>
+              <form onsubmit="return false;" id="createComplainForm">
+                <div class="form-group">
+                  <label for="complainOn">Complain On <span class="text-danger">*</span></label>
+                  <select class="form-control" name="complainOn" id="complainOn"></select>
+                </div>
+                <div class="form-group">
+                  <label for="description">Description <span class="text-danger">*</span></label>
+                  <textarea class="form-control" rows="5" name="description" id="description"
+                            placeholder="Enter details about your complain"></textarea>
+                  <p class="text-sm" id="descriptionCounter">0/2000 characters</p>
+                </div>
+                <div class="text-right mt-3">
+                  <button class="btn btn-primary" type="submit" th:classappend="${isImpersonating ? 'disabled' :''}">Submit</button>
+                  <button class="btn btn-warning" type="reset">Reset</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</th:block>
+<th:block layout:fragment="script">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
+  <script src="/static/js/common-validation.js"></script>
+  <script src="/static/js/complain/create.js"></script>
+</th:block>
+</body>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Customer Annual Certificate</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+  <section class="content mt-2">
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-md-12">
+          <div class="card card-outline card-primary">
+            <div class="card-header">
+              <h2 class="card-title text-primary"><i class="fas fa-certificate"></i> Customer Certificate</h2>
+            </div>
+            <div class="card-body">
+              <div>
+                <h4>
+                  Click the button below to download customer annual certificate
+                  <b class="text-primary">upto December-<span th:text="${billYear}"></span></b>
+                </h4>
+                <br>
+                <div class="justify-content-center">
+                  <a href="/api/v1/certificate/download" class="btn btn-primary btn-lg"><i class="fa fa-download"
+                                                                                           aria-hidden="true"></i>
+                    Download</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</th:block>
+<th:block layout:fragment="script">
+</th:block>
+</body>

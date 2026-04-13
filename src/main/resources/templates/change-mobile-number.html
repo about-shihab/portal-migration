@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Change Mobile Number</title>
+    <link rel="stylesheet" href="/static/css/password.css">
+</head>
+<body>
+<th:block layout:fragment="content">
+
+    <section class="content mt-2">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h2 class="card-title text-primary"><i class="fas fa-phone"></i> Change Mobile Number</h2>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <h6 class="text-danger">
+                                    ** Please note that you can only change your mobile number once per month and a
+                                    maximum of 3 per year.
+                                </h6>
+                                <span id="error_msg" style="color: red; display: none;"></span>
+                                <span id="success_msg" style="color: green; display: none;"></span>
+                            </div>
+                            <form id="changeMobileNumberForm">
+                                <div class="form-group">
+                                    <label for="mobileNumber">Current Mobile Number</label>
+                                    <div class="input-group">
+                                        <input type="tel" class="form-control input" id="mobileNumber"
+                                               name="mobileNumber"
+                                               placeholder="Enter current mobile number">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newMobileNumber">New Mobile Number</label>
+                                    <div class="input-group">
+                                        <input type="tel" class="form-control input" id="newMobileNumber"
+                                               name="newMobileNumber"
+                                               placeholder="Enter new mobile number">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-primary" id="sendOTPButton">Send OTP</button>
+                                <div style="padding-bottom: 20px">
+                                    <span id="otpMessage"></span>
+                                    <span id="timer"></span>
+                                </div>
+                                <div class="form-group" id="confirmNewMobileNumberInput" hidden="hidden">
+                                    <label for="confirmNewMobileNumber">Confirm New Mobile Number</label>
+                                    <div class="input-group">
+                                        <input type="tel" class="form-control input" id="confirmNewMobileNumber"
+                                               name="confirmNewMobileNumber"
+                                               placeholder="Confirm New Mobile Number">
+                                    </div>
+                                </div>
+                                <div class="form-group" id="OTPinput" hidden="hidden">
+                                    <label for="otp">OTP</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control input" id="otp" name="otp"
+                                               placeholder="Enter OTP">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary" id="changePhoneNumberButton"
+                                        hidden="hidden">
+                                    Change Phone Number
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</th:block>
+<th:block layout:fragment="script">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
+    <script src="/static/js/common-validation.js"></script>
+    <script src="/static/js/change-mobile-number.js"></script>
+</th:block>
+</body>

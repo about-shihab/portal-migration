@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.3.final using JasperReports Library version 6.20.3-415f9428cffdb6805c6f85bbb29ebaf18813a2ab  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Certificate" pageWidth="595" pageHeight="842" whenNoDataType="NoDataSection" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" whenResourceMissingType="Empty" uuid="88708435-acd1-4e98-9e79-ae7f5ae86e0a">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="db.jrdax"/>
+	<property name="background.image.widht" value="595"/>
+	<property name="background.image.y" value="10"/>
+	<property name="background.image.x" value="10"/>
+	<property name="background.image.height" value="689"/>
+	<parameter name="inCUST_CODE" class="java.lang.String"/>
+	<parameter name="inBILL_MONTH" class="java.lang.Long"/>
+	<parameter name="inBILL_YEAR" class="java.lang.Long"/>
+	<parameter name="IMAGE_DIR" class="java.lang.String"/>
+	<parameter name="IsNonMeter" class="java.lang.Integer"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT rv.COMPANY_NAME
+      , rv.MOTHER_CONPANY
+      , rv.COMPANY_ADDRESS_1
+      ,rv.rpt_title,
+       rv.rpt_part_one,
+       rv.rpt_part_two,
+       rv.rpt_part_three,
+       rv.WARNING_MSG,
+       rv.rpt_footer,
+       1 as duesFlag,
+       rv.rpt_cust_nm_txt,
+       rv.rpt_cust_addr_txt,
+       rv.rpt_cust_code_txt,
+       rv.rpt_mbl_txt ,
+       rv.qr_text,
+      rv.google_qr_api,
+       c_code,
+       zone,
+       mobile_no,
+       CUST_NAME,
+       address,
+       cust_type_id,
+       pre_cust_code,
+       current_total,
+       bill_month_count,
+       SYSDATE,
+       from_month,
+       month_list,
+       bill_year
+FROM (SELECT DISTINCT (c_code),
+                      zone,
+                      mobile_no,
+                      CUST_NAME,
+                      address,
+                      cust_type_id,
+                      pre_cust_code,
+                      current_total,
+                      SUM(bill_month_count) bill_month_count,
+                      SYSDATE,
+                      TO_CHAR(TO_DATE($P{inBILL_MONTH}, 'mm'), 'Month') from_month,
+                      month_list,
+                      bill_year
+      FROM (SELECT SUM(cb.bill_month)   sumList,
+                   MV.CUST_NAME,
+                   MV.ZONE,
+                   mv.mobile_no,
+                   MV.ADDRESS,
+                   MV.CUST_TYPE_ID,
+                   MV.CODE              c_code,
+                   MV.PRE_CUST_CODE,
+                   SUM (
+                              DECODE (
+                                 CB.STATUS,
+                                 'Unpaid', NVL (CB.CURRENT_TOTAL, 0),
+                                 'Pending', NVL (CB.CURRENT_TOTAL, 0),
+                                 'AR-SURCHARGE', NVL (CB.SURCHARGE_AMOUNT, 0),
+                                 NVL (CB.REMAINING, 0)))
+                               current_total,
+                   cb.cust_code,
+                   cb.bill_year,
+                   COUNT(cb.bill_month) bill_month_count,
+                   LISTAGG(TO_CHAR(TO_DATE(cb.bill_month, 'mm'), 'Mon'), ', ')
+                           WITHIN GROUP (ORDER BY cb.bill_month)
+                                        month_list
+            FROM customer_bill cb
+                     JOIN meter_unoin_dom_cust_view mv ON mv.code = CB.CUST_CODE
+            WHERE CB.STATUS <> 'Paid'
+              AND cb.cust_code =$P{inCUST_CODE}--'2001NM-103582'
+              AND bill_year || TRIM(TO_CHAR(bill_month, '09')) <=
+                  $P{inBILL_YEAR} || TRIM(TO_CHAR($P{inBILL_MONTH}, '09'))
+            GROUP BY cb.cust_code,
+                     cb.bill_year,
+                     MV.CUST_NAME,
+                     MV.ZONE,
+                     mv.mobile_no,
+                     MV.ADDRESS,
+                     MV.CUST_TYPE_ID,
+                     MV.CODE,
+                     MV.PRE_CUST_CODE
+            ORDER BY cb.bill_year DESC)
+      WHERE  current_total > 0
+      GROUP BY c_code,
+               zone,
+               mobile_no,
+               CUST_NAME,
+               address,
+               cust_type_id,
+               pre_cust_code,
+               current_total,
+               SYSDATE,
+               month_list,
+               bill_year
+      ORDER BY pre_cust_code, c_code, bill_year DESC),
+    RPT_CERT_CONTENT_VIEW_MAMUN rv]]>
+	</queryString>
+	<field name="COMPANY_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="COMPANY_NAME"/>
+		<property name="com.jaspersoft.studio.field.label" value="COMPANY_NAME"/>
+	</field>
+	<field name="MOTHER_CONPANY" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="MOTHER_CONPANY"/>
+		<property name="com.jaspersoft.studio.field.label" value="MOTHER_CONPANY"/>
+	</field>
+	<field name="COMPANY_ADDRESS_1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="COMPANY_ADDRESS_1"/>
+		<property name="com.jaspersoft.studio.field.label" value="COMPANY_ADDRESS_1"/>
+	</field>
+	<field name="RPT_TITLE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RPT_TITLE"/>
+		<property name="com.jaspersoft.studio.field.label" value="RPT_TITLE"/>
+	</field>
+	<field name="RPT_PART_ONE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RPT_PART_ONE"/>
+		<property name="com.jaspersoft.studio.field.label" value="RPT_PART_ONE"/>
+	</field>
+	<field name="RPT_PART_TWO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RPT_PART_TWO"/>
+		<property name="com.jaspersoft.studio.field.label" value="RPT_PART_TWO"/>
+	</field>
+	<field name="RPT_PART_THREE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RPT_PART_THREE"/>
+		<property name="com.jaspersoft.studio.field.label" value="RPT_PART_THREE"/>
+	</field>
+	<field name="WARNING_MSG" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="WARNING_MSG"/>
+		<property name="com.jaspersoft.studio.field.label" value="WARNING_MSG"/>
+	</field>
+	<field name="RPT_FOOTER" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RPT_FOOTER"/>
+		<property name="com.jaspersoft.studio.field.label" value="RPT_FOOTER"/>
+	</field>
+	<field name="DUESFLAG" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="DUESFLAG"/>
+		<property name="com.jaspersoft.studio.field.label" value="DUESFLAG"/>
+	</field>
+	<field name="RPT_CUST_NM_TXT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RPT_CUST_NM_TXT"/>
+		<property name="com.jaspersoft.studio.field.label" value="RPT_CUST_NM_TXT"/>
+	</field>
+	<field name="RPT_CUST_ADDR_TXT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RPT_CUST_ADDR_TXT"/>
+		<property name="com.jaspersoft.studio.field.label" value="RPT_CUST_ADDR_TXT"/>
+	</field>
+	<field name="RPT_CUST_CODE_TXT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RPT_CUST_CODE_TXT"/>
+		<property name="com.jaspersoft.studio.field.label" value="RPT_CUST_CODE_TXT"/>
+	</field>
+	<field name="RPT_MBL_TXT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="RPT_MBL_TXT"/>
+		<property name="com.jaspersoft.studio.field.label" value="RPT_MBL_TXT"/>
+	</field>
+	<field name="QR_TEXT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="QR_TEXT"/>
+		<property name="com.jaspersoft.studio.field.label" value="QR_TEXT"/>
+	</field>
+	<field name="GOOGLE_QR_API" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="GOOGLE_QR_API"/>
+		<property name="com.jaspersoft.studio.field.label" value="GOOGLE_QR_API"/>
+	</field>
+	<field name="C_CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="C_CODE"/>
+		<property name="com.jaspersoft.studio.field.label" value="C_CODE"/>
+	</field>
+	<field name="ZONE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ZONE"/>
+		<property name="com.jaspersoft.studio.field.label" value="ZONE"/>
+	</field>
+	<field name="MOBILE_NO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="MOBILE_NO"/>
+		<property name="com.jaspersoft.studio.field.label" value="MOBILE_NO"/>
+	</field>
+	<field name="CUST_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CUST_NAME"/>
+		<property name="com.jaspersoft.studio.field.label" value="CUST_NAME"/>
+	</field>
+	<field name="ADDRESS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ADDRESS"/>
+		<property name="com.jaspersoft.studio.field.label" value="ADDRESS"/>
+	</field>
+	<field name="CUST_TYPE_ID" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="CUST_TYPE_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="CUST_TYPE_ID"/>
+	</field>
+	<field name="PRE_CUST_CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="PRE_CUST_CODE"/>
+		<property name="com.jaspersoft.studio.field.label" value="PRE_CUST_CODE"/>
+	</field>
+	<field name="CURRENT_TOTAL" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="CURRENT_TOTAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="CURRENT_TOTAL"/>
+	</field>
+	<field name="BILL_MONTH_COUNT" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="BILL_MONTH_COUNT"/>
+		<property name="com.jaspersoft.studio.field.label" value="BILL_MONTH_COUNT"/>
+	</field>
+	<field name="SYSDATE" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="SYSDATE"/>
+		<property name="com.jaspersoft.studio.field.label" value="SYSDATE"/>
+	</field>
+	<field name="FROM_MONTH" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FROM_MONTH"/>
+		<property name="com.jaspersoft.studio.field.label" value="FROM_MONTH"/>
+	</field>
+	<field name="MONTH_LIST" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="MONTH_LIST"/>
+		<property name="com.jaspersoft.studio.field.label" value="MONTH_LIST"/>
+	</field>
+	<field name="BILL_YEAR" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="BILL_YEAR"/>
+		<property name="com.jaspersoft.studio.field.label" value="BILL_YEAR"/>
+	</field>
+	<variable name="totalAmount" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{CURRENT_TOTAL}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="totalMonth" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{BILL_MONTH_COUNT}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="v_mobileNo" class="java.lang.String">
+		<variableExpression><![CDATA[$F{MOBILE_NO}==null?"N/A":$F{MOBILE_NO}]]></variableExpression>
+	</variable>
+	<background>
+		<band height="580">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<image hAlign="Center" vAlign="Middle" isUsingCache="true" isLazy="true" onErrorType="Blank">
+				<reportElement mode="Transparent" x="0" y="0" width="555" height="560" uuid="f30b4970-749f-43f0-89a7-58cb1b73530c"/>
+				<imageExpression><![CDATA[$P{IMAGE_DIR}+"/kgdcl_transparent.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="72" splitType="Stretch">
+			<image hAlign="Center" vAlign="Middle" isUsingCache="true" isLazy="true" onErrorType="Icon">
+				<reportElement x="22" y="-12" width="79" height="72" uuid="05301f25-8a2b-4c3b-8af2-990554975b37"/>
+				<imageExpression><![CDATA[$P{IMAGE_DIR}+"/kgdcl_logo.png"]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement x="1" y="67" width="553" height="5" uuid="7934ca3e-b145-4b01-99f9-64f91658ea60"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true" isUnderline="false"/>
+					<paragraph leftIndent="4" spacingBefore="2"/>
+				</textElement>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="77" y="3" width="384" height="21" uuid="f2ab2e7f-d408-4318-91c5-680e902072d0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COMPANY_NAME}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="77" y="21" width="384" height="14" uuid="6e0e42be-2f54-42fc-91f5-249ae85209f8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["( "+$F{MOTHER_CONPANY}+" )"]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont" isBlankWhenNull="true">
+				<reportElement x="77" y="33" width="384" height="21" uuid="c7bd15ef-6088-409f-b51c-e3815c62c311"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="14" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COMPANY_ADDRESS_1}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="461" y="-12" width="92" height="76" uuid="430baeea-65df-4db7-8939-a7650e336d4f"/>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" evaluationTime="Report">
+					<jr:codeExpression><![CDATA[$F{CUST_NAME}+", "+$F{C_CODE}+", "+$V{v_mobileNo}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="129">
+			<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.intValue() == 1
+]]></printWhenExpression>
+			<textField>
+				<reportElement x="28" y="55" width="266" height="23" uuid="acfd26a5-dc0d-4438-853c-3d8ac3c50cc4"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="13" isBold="false" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RPT_PART_ONE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="3" width="554" height="30" uuid="0cb07831-f84b-4c67-9726-971e9d88e7dc"/>
+				<textElement textAlignment="Center">
+					<font fontName="Nikosh" size="16" isBold="false" isItalic="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RPT_TITLE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="461" y="55" width="83" height="23" uuid="50433915-d683-4349-877d-0012093163fa"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="13" isBold="false" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RPT_PART_TWO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="80" width="394" height="30" uuid="e30b4b15-5d5d-41e9-945c-d72ee7ac273f"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="13" isBold="false" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RPT_PART_THREE}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="294" y="55" width="167" height="23" uuid="13c4f0a4-cc65-4765-83fb-5124f69f7954"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Dotted" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="Calibri" size="13" isBold="true" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{C_CODE}+" ("+$F{PRE_CUST_CODE}+") "]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="33" y="80" width="117" height="23" isPrintWhenDetailOverflows="true" uuid="fdd63558-32c2-44ee-b6bf-c2bdc0ae86ef"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Dotted" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Calibri" size="12" isBold="true" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("MMMM").format(new SimpleDateFormat("M").parse($P{inBILL_MONTH}.toString()))+" - "+$P{inBILL_YEAR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="430" y="3" width="40" height="17" uuid="74ba27b1-327a-4104-847c-6df7200a6227"/>
+				<textElement textAlignment="Right">
+					<font fontName="Nikosh" size="13"/>
+				</textElement>
+				<text><![CDATA[তারিখঃ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="470" y="1" width="84" height="17" uuid="4d573cb6-4f43-4bb1-a73b-1852b5d87cd5"/>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Dashed"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Top" markup="styled">
+					<font fontName="Calibri" size="13" isBold="false" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new SimpleDateFormat("dd/MMM/yyyy").format($F{SYSDATE})]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="43">
+			<staticText>
+				<reportElement x="28" y="-5" width="517" height="20" uuid="d91cc678-42c3-46ec-b312-710e2dc21cf4"/>
+				<textElement>
+					<font fontName="Nikosh" size="15" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[বকেয়া বিলের বিবরণঃ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="140" y="22" width="280" height="20" uuid="75093b00-d089-413a-85e7-0f3adf9fd905"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bill Month (s)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="28" y="22" width="112" height="20" uuid="b1839b60-5844-47b9-94da-b54fc87c2cfe"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bill Year]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="420" y="22" width="124" height="20" uuid="dce03f33-1f1c-4107-9a90-e98acb1d5150"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Due Amont (BDT)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<frame>
+				<reportElement x="28" y="0" width="517" height="20" uuid="0f110820-d7b9-4f24-8a0e-ecadfedca217"/>
+				<textField textAdjust="StretchHeight">
+					<reportElement positionType="Float" x="0" y="0" width="112" height="20" uuid="896842aa-a2c1-49aa-b8c8-bd74ef4f6c23"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="13" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{BILL_YEAR}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement positionType="Float" x="112" y="0" width="280" height="20" uuid="6d6efd87-7f67-42ea-8806-becd6d65efe9">
+						<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+						<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="13" isBold="false"/>
+						<paragraph leftIndent="10" rightIndent="5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{MONTH_LIST}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement positionType="Float" x="392" y="0" width="125" height="20" uuid="fe974f72-cecf-4c88-a42b-d9008de95698">
+						<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="13" isBold="false"/>
+						<paragraph rightIndent="10"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CURRENT_TOTAL}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="-1" width="1" height="26" uuid="46f24615-3cd9-4359-a5df-5995d4f2f180"/>
+				</line>
+				<line>
+					<reportElement stretchType="RelativeToTallestObject" x="112" y="-1" width="1" height="26" uuid="a31e8a94-e3ff-4aa5-a8ab-5ffa8b41a47b"/>
+				</line>
+				<line>
+					<reportElement stretchType="RelativeToTallestObject" x="392" y="-3" width="1" height="26" uuid="d1008bb9-32ab-4a26-8173-36c82f15fa1f"/>
+				</line>
+				<line>
+					<reportElement stretchType="RelativeToTallestObject" x="516" y="-1" width="1" height="26" uuid="02257fa0-feb1-462f-8299-8bda6e27c14b"/>
+				</line>
+				<line>
+					<reportElement positionType="Float" x="0" y="25" width="516" height="1" uuid="04eff154-c2b0-42b0-842b-71a15276b29a"/>
+				</line>
+			</frame>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="269" splitType="Stretch">
+			<textField>
+				<reportElement stretchType="RelativeToTallestObject" x="1" y="246" width="555" height="23" uuid="18ea7425-593f-42a5-a5db-4d958694f132"/>
+				<textElement textAlignment="Center">
+					<font fontName="Nikosh" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RPT_FOOTER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="RelativeToTallestObject" x="29" y="225" width="72" height="20" uuid="9df659c0-8fc3-4a4c-b41c-fe53f3694b7d"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Nikosh" size="13"/>
+				</textElement>
+				<text><![CDATA[* শর্ত প্রযোজ্য]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="28" y="169" width="72" height="22" uuid="b94785fd-650e-46c6-b189-dbfdf309dfb4"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Nikosh" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RPT_CUST_ADDR_TXT}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="ElementGroupHeight" x="110" y="169" width="433" height="23" uuid="7fa38690-5594-4912-bd76-f2fd61a3b3b9">
+					<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+					<property name="com.jaspersoft.studio.data.defaultdataadapter" value="erp_test"/>
+					<property name="background.image.path" value="http://kgdcl.teletalk.com.bd/images/kgdcl_logo.png"/>
+					<property name="background.image.alpha" value="0.1"/>
+					<property name="background.image.x" value="10"/>
+					<property name="background.image.y" value="10"/>
+					<property name="background.image.widht" value="595"/>
+					<property name="background.image.height" value="451"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Dotted" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Calibri" size="13"/>
+					<paragraph leftIndent="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ADDRESS}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="28" y="121" width="72" height="22" uuid="3e8eafd6-7f76-48a1-a804-c01470f113f2"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Nikosh" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RPT_CUST_CODE_TXT}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="110" y="118" width="433" height="22" uuid="0e891fe2-104c-42d6-ad86-65960cdb2b44">
+					<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+					<property name="com.jaspersoft.studio.data.defaultdataadapter" value="erp_test"/>
+					<property name="background.image.path" value="C:\Users\MIS-PC\Downloads\kgdcl.jpg"/>
+					<property name="background.image.alpha" value="0.1"/>
+					<property name="background.image.x" value="10"/>
+					<property name="background.image.y" value="10"/>
+					<property name="background.image.widht" value="595"/>
+					<property name="background.image.height" value="451"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Dotted" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Calibri" size="13"/>
+					<paragraph leftIndent="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{C_CODE}+" ("+$F{PRE_CUST_CODE}+") "]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="28" y="146" width="72" height="21" uuid="5c6cd56f-e2b0-4bca-a498-efa90048bf8f"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Nikosh" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RPT_MBL_TXT}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="ScaleFont">
+				<reportElement x="110" y="145" width="433" height="22" uuid="cfca54a2-6394-4a12-8e45-21db8a241bb9">
+					<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+					<property name="com.jaspersoft.studio.data.defaultdataadapter" value="erp_test"/>
+					<property name="background.image.path" value="C:\Users\MIS-PC\Downloads\kgdcl.jpg"/>
+					<property name="background.image.alpha" value="0.1"/>
+					<property name="background.image.x" value="10"/>
+					<property name="background.image.y" value="10"/>
+					<property name="background.image.widht" value="595"/>
+					<property name="background.image.height" value="451"/>
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0" lineStyle="Dotted"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Dotted" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Calibri" size="13"/>
+					<paragraph leftIndent="15"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{v_mobileNo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="100" y="171" width="10" height="21" uuid="adcc79de-fae1-472b-bea8-ed8a25372602"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="13"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="122" width="10" height="21" uuid="050f878f-5bcb-4097-9a0b-7aadd4bf0c16"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="13"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="146" width="10" height="21" uuid="df12ce9d-f0d7-42ee-bc48-97c39db39ae8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="13"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<frame>
+				<reportElement x="28" y="94" width="515" height="22" uuid="39bb242f-a8d8-4864-98d7-0abe2f052428"/>
+				<textField>
+					<reportElement x="0" y="0" width="72" height="22" uuid="69acf711-0e06-43bf-b644-08abd330d568"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Nikosh" size="13"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{RPT_CUST_NM_TXT}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="ScaleFont">
+					<reportElement x="82" y="0" width="433" height="22" uuid="c55dc3cc-7aa9-4f7e-a5a7-0a3319510d4d">
+						<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+						<property name="com.jaspersoft.studio.data.defaultdataadapter" value="erp_test"/>
+						<property name="background.image.path" value="C:\Users\MIS-PC\Downloads\kgdcl.jpg"/>
+						<property name="background.image.alpha" value="0.1"/>
+						<property name="background.image.x" value="10"/>
+						<property name="background.image.y" value="10"/>
+						<property name="background.image.widht" value="595"/>
+						<property name="background.image.height" value="451"/>
+						<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Dotted" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Calibri" size="13"/>
+						<paragraph leftIndent="15"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CUST_NAME}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="72" y="1" width="10" height="21" uuid="e3a97fd3-e628-4696-98c7-6f6f1d31622d"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Times New Roman" size="13"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
+			</frame>
+			<staticText>
+				<reportElement x="28" y="70" width="49" height="25" uuid="f5da6bfe-2ae1-4b8f-a87a-fbb33bf277b9"/>
+				<textElement>
+					<font fontName="Nikosh" size="15"/>
+				</textElement>
+				<text><![CDATA[প্রতি,]]></text>
+			</staticText>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="99">
+			<textField>
+				<reportElement x="28" y="0" width="342" height="20" uuid="66d8cbb6-eb61-4a01-bbd7-f77483e6fd52">
+					<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+					<paragraph leftIndent="5" rightIndent="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total "+$V{totalMonth}+" month(s) Due"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="420" y="0" width="124" height="20" uuid="264d5aae-f32a-48da-8a16-40c808f96f7a">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+					<paragraph rightIndent="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalAmount}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="370" y="0" width="50" height="20" uuid="bbb2e0d1-e9b6-4efb-b5fc-8cbd2017c01e">
+					<property name="com.jaspersoft.studio.unit.rightIndent" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="13" isBold="true"/>
+					<paragraph rightIndent="10"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField>
+				<reportElement stretchType="ElementGroupHeight" x="29" y="31" width="514" height="68" uuid="6388f7ee-ab82-49ef-86ff-c445b5e3d096"/>
+				<textElement textAlignment="Justified" markup="styled">
+					<font fontName="Nikosh" size="13"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{WARNING_MSG}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

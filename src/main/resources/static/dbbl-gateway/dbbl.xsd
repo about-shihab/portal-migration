@@ -1,0 +1,72 @@
+<xs:schema
+    xmlns:tns="http://ecom.dbbl/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://ecom.dbbl/">
+    <xs:element name="getransid" type="tns:getransid"/>
+    <xs:element name="getransidResponse" type="tns:getransidResponse"/>
+    <xs:element name="getresult" type="tns:getresult"/>
+    <xs:element name="getresultResponse" type="tns:getresultResponse"/>
+    <xs:element name="getresultfield" type="tns:getresultfield"/>
+    <xs:element name="getresultfieldResponse" type="tns:getresultfieldResponse"/>
+    <xs:element name="getsubmertransid" type="tns:getsubmertransid"/>
+    <xs:element name="getsubmertransidResponse" type="tns:getsubmertransidResponse"/>
+    <xs:complexType name="getransid">
+        <xs:sequence>
+            <xs:element name="userid" type="xs:string" minOccurs="0"/>
+            <xs:element name="pwd" type="xs:string" minOccurs="0"/>
+            <xs:element name="amount" type="xs:string" minOccurs="0"/>
+            <xs:element name="cardtype" type="xs:string" minOccurs="0"/>
+            <xs:element name="txnrefnum" type="xs:string" minOccurs="0"/>
+            <xs:element name="clientip" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getransidResponse">
+        <xs:sequence>
+            <xs:element name="return" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getresult">
+        <xs:sequence>
+            <xs:element name="userid" type="xs:string" minOccurs="0"/>
+            <xs:element name="pwd" type="xs:string" minOccurs="0"/>
+            <xs:element name="transid" type="xs:string" minOccurs="0"/>
+            <xs:element name="clientip" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getresultResponse">
+        <xs:sequence>
+            <xs:element name="return" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getsubmertransid">
+        <xs:sequence>
+            <xs:element name="userid" type="xs:string" minOccurs="0"/>
+            <xs:element name="pwd" type="xs:string" minOccurs="0"/>
+            <xs:element name="submername" type="xs:string" minOccurs="0"/>
+            <xs:element name="submerid" type="xs:string" minOccurs="0"/>
+            <xs:element name="terminalid" type="xs:string" minOccurs="0"/>
+            <xs:element name="amount" type="xs:string" minOccurs="0"/>
+            <xs:element name="cardtype" type="xs:string" minOccurs="0"/>
+            <xs:element name="txnrefnum" type="xs:string" minOccurs="0"/>
+            <xs:element name="clientip" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getsubmertransidResponse">
+        <xs:sequence>
+            <xs:element name="return" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getresultfield">
+        <xs:sequence>
+            <xs:element name="userid" type="xs:string" minOccurs="0"/>
+            <xs:element name="pwd" type="xs:string" minOccurs="0"/>
+            <xs:element name="transid" type="xs:string" minOccurs="0"/>
+            <xs:element name="clientip" type="xs:string" minOccurs="0"/>
+            <xs:element name="billinginfo" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="getresultfieldResponse">
+        <xs:sequence>
+            <xs:element name="return" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

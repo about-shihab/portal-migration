@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bill_format_sgcl_subreport1" language="groovy" pageWidth="350" pageHeight="802" columnWidth="350" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="024e41f2-f941-413f-b751-a80405927da3">
+	<property name="ireport.zoom" value="2.853116706110003"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="zone_name" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT COMPANY_VAT_REG_NO, 240304 COMPANY_AREA_CODE
+  FROM company_details cd
+ WHERE company_shrot_name = 'KGDCL']]>
+	</queryString>
+	<field name="COMPANY_VAT_REG_NO" class="java.lang.String"/>
+	<field name="COMPANY_AREA_CODE" class="java.math.BigDecimal"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="3" width="97" height="13" uuid="6d297eb5-6081-4067-a7ca-0264e14746dd"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[VAT Registration No:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="99" y="3" width="113" height="13" uuid="4241e55c-b462-45d9-be45-876a1987272b"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COMPANY_VAT_REG_NO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="212" y="3" width="39" height="13" uuid="254e9ded-fdf0-4800-b539-122fc494482c"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+					<paragraph leftIndent="8"/>
+				</textElement>
+				<text><![CDATA[Area :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="251" y="3" width="87" height="13" uuid="7efe0ee0-5712-4d05-8102-35f65b8affef"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COMPANY_AREA_CODE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

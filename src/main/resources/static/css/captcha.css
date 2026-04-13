@@ -1,0 +1,23 @@
+#captcha .captcha_row {
+    display: flex;
+    align-items: center;
+}
+
+#captcha .preview {
+    flex: 1;
+    color: #306381;
+    text-align: center;
+    height: 45px;
+    line-height: 45px;
+    letter-spacing: 8px;
+    border: 1px dashed #013368;
+}
+
+#captcha .captcha_refresh {
+    margin-left: 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #013368;
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.utraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE">KGDCL Customer Billing Portal</title>
+    <link rel="icon" type="image/ico" href="/static/images/kgdcl_logo.png">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icheck-bootstrap@3.0.1/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/css/bs-stepper.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bootstrap-4@5.0.27/bootstrap-4.min.css">
+    <link rel="stylesheet" th:href="@{/adminlte/dist/css/adminlte.min.css}">
+    <link rel="stylesheet" th:href="@{/static/css/password.css}">
+    <link rel="stylesheet" th:href="@{/static/css/captcha.css}">
+    <link rel="stylesheet" th:href="@{/static/css/payment-footer.css}">
+    <link rel="stylesheet" th:href="@{/static/css/floating-label.css}">
+</head>
+<body class="hold-transition layout-top-nav layout-footer-fixed" style="background: #ededed;">
+<div class="wrapper" style="min-height: 80vh">
+    <div class="content mt-3" style="">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-sm-12 col-lg-6">
+                    <div class="card card-outline card-primary shadow">
+                        <div class="card-header text-center">
+                            <a href="/" class="brand-link">
+                                <img src="/static/images/kgdcl_logo.png" height="100" alt="KGDCL Logo"
+                                     class=" img-circle elevation-2 float-none"
+                                     style="opacity: 1">
+                            </a>
+                            <a href="/" class="h4 text-bold text-primary">KGDCL Customer Billing Portal</a>
+                        </div>
+                        <div class="card-body">
+                            <div layout:fragment="auth-form">
+
+                            </div>
+                            <div class="row mt-1">
+                                <div layout:fragment="quick-links">
+
+                                </div>
+                                <div class="col-12">
+                                    <p class="mb-1">
+                                        <a class="btn btn-outline-success btn-xs"
+                                           href="/static/pdf/portal_manual_w_c.pdf"
+                                           download="portal_manual.pdf">User
+                                            Manual (ব্যবহার
+                                            নির্দেশিকা)</a>
+                                    </p>
+                                </div>
+                                <div class="col-12">
+                                    <p class="mb-1">
+                                        <a class="btn btn-outline-info btn-xs" href="/static/pdf/faq.pdf"
+                                           download="faq.pdf">Frequently Asked Questions
+                                            (FAQ)</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div style="max-height: 20vh" th:replace="~{shared/payment-footer}"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/adminlte/dist/js/adminlte.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bs-stepper@1.7.0/dist/js/bs-stepper.min.js"></script>
+<script th:src="@{/static/js/common-validation.js}"></script>
+<script th:src="@{/static/js/common.js}"></script>
+<script th:src="@{/static/js/captcha.js}"></script>
+<script th:src="@{/static/js/payment-footer.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        initCaptcha();
+        bindSlider();
+    });
+</script>
+<div layout:fragment="script">
+</div>
+</body>
+</html>

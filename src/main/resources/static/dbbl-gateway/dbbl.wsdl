@@ -1,0 +1,100 @@
+<definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+             xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy"
+             xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://ecom.dbbl/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/"
+             targetNamespace="http://ecom.dbbl/" name="dbblecomtxn">
+    <types>
+        <xsd:schema>
+            <xsd:import namespace="http://ecom.dbbl/" schemaLocation="dbbl.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="getransid">
+        <part name="parameters" element="tns:getransid"/>
+    </message>
+    <message name="getransidResponse">
+        <part name="parameters" element="tns:getransidResponse"/>
+    </message>
+    <message name="getresultfield">
+        <part name="parameters" element="tns:getresultfield"/>
+    </message>
+    <message name="getresultfieldResponse">
+        <part name="parameters" element="tns:getresultfieldResponse"/>
+    </message>
+    <message name="getsubmertransid">
+        <part name="parameters" element="tns:getsubmertransid"/>
+    </message>
+    <message name="getsubmertransidResponse">
+        <part name="parameters" element="tns:getsubmertransidResponse"/>
+    </message>
+    <message name="getresult">
+        <part name="parameters" element="tns:getresult"/>
+    </message>
+    <message name="getresultResponse">
+        <part name="parameters" element="tns:getresultResponse"/>
+    </message>
+    <portType name="dbblecomtxn">
+        <operation name="getransid">
+            <input wsam:Action="http://ecom.dbbl/dbblecomtxn/getransidRequest" message="tns:getransid"/>
+            <output wsam:Action="http://ecom.dbbl/dbblecomtxn/getransidResponse" message="tns:getransidResponse"/>
+        </operation>
+        <operation name="getresultfield">
+            <input wsam:Action="http://ecom.dbbl/dbblecomtxn/getresultfieldRequest" message="tns:getresultfield"/>
+            <output wsam:Action="http://ecom.dbbl/dbblecomtxn/getresultfieldResponse"
+                    message="tns:getresultfieldResponse"/>
+        </operation>
+        <operation name="getsubmertransid">
+            <input wsam:Action="http://ecom.dbbl/dbblecomtxn/getsubmertransidRequest" message="tns:getsubmertransid"/>
+            <output wsam:Action="http://ecom.dbbl/dbblecomtxn/getsubmertransidResponse"
+                    message="tns:getsubmertransidResponse"/>
+        </operation>
+        <operation name="getresult">
+            <input wsam:Action="http://ecom.dbbl/dbblecomtxn/getresultRequest" message="tns:getresult"/>
+            <output wsam:Action="http://ecom.dbbl/dbblecomtxn/getresultResponse" message="tns:getresultResponse"/>
+        </operation>
+    </portType>
+    <binding name="dbblecomtxnPortBinding" type="tns:dbblecomtxn">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <operation name="getransid">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getresultfield">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getsubmertransid">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getresult">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="dbblecomtxn">
+        <port name="dbblecomtxnPort" binding="tns:dbblecomtxnPortBinding">
+            <soap:address location="https://ecomtest.dutchbanglabank.com:443/ecomws/dbblecomtxn"/>
+        </port>
+    </service>
+</definitions>

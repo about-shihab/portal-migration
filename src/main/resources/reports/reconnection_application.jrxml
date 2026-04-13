@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.3.final using JasperReports Library version 6.20.3-415f9428cffdb6805c6f85bbb29ebaf18813a2ab  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reconnection_application" pageWidth="595" pageHeight="700" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30" uuid="535a8980-f49e-40aa-a1a8-eddb8d4147eb">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="erp_test"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="CUST_CODE" class="java.lang.String"/>
+	<parameter name="ATTACHED_NAME" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT TO_CHAR(SYSDATE, 'dd/mm/yyyy') AS application_date,
+       t.code,
+       t.cust_name,
+       t.zone,
+       TO_CHAR(latest_dd.disconnection_date, 'dd/mm/yyyy') AS disconnection_date,
+       t.address
+  FROM METER_UNOIN_DOM_CUST_VIEW t
+ INNER JOIN (
+    SELECT dd.cust_code, MAX(dd.disconnection_date_time) AS disconnection_date
+      FROM disconnection_detail dd
+     WHERE UPPER(dd.status) = 'APPROVED'
+     GROUP BY dd.cust_code
+ ) latest_dd
+    ON t.code = latest_dd.cust_code
+ INNER JOIN disconnection_detail dd
+    ON latest_dd.cust_code = dd.cust_code
+   AND latest_dd.disconnection_date = dd.disconnection_date_time
+ WHERE t.code = $P{CUST_CODE}
+   AND t.connection_status_id IN (
+        10402,
+        10396,
+        10397,
+        10398,
+        10399,
+        10400,
+        12677,
+        12680,
+        40001,
+        10101,
+        10404
+    )]]>
+	</queryString>
+	<field name="APPLICATION_DATE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="APPLICATION_DATE"/>
+		<property name="com.jaspersoft.studio.field.label" value="APPLICATION_DATE"/>
+	</field>
+	<field name="CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CODE"/>
+		<property name="com.jaspersoft.studio.field.label" value="CODE"/>
+	</field>
+	<field name="CUST_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CUST_NAME"/>
+		<property name="com.jaspersoft.studio.field.label" value="CUST_NAME"/>
+	</field>
+	<field name="ZONE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ZONE"/>
+		<property name="com.jaspersoft.studio.field.label" value="ZONE"/>
+	</field>
+	<field name="DISCONNECTION_DATE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="DISCONNECTION_DATE"/>
+		<property name="com.jaspersoft.studio.field.label" value="DISCONNECTION_DATE"/>
+	</field>
+	<field name="ADDRESS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ADDRESS"/>
+		<property name="com.jaspersoft.studio.field.label" value="ADDRESS"/>
+	</field>
+	<pageHeader>
+		<band height="191" splitType="Stretch">
+			<textField>
+				<reportElement x="35" y="23" width="245" height="21" uuid="a9b27c1e-767f-4a27-abef-ff662fa6098b"/>
+				<textElement>
+					<font fontName="Calibri" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{APPLICATION_DATE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="35" y="47" width="245" height="20" uuid="356a0e21-b7df-4ada-bbe8-d5335844b740"/>
+				<textElement>
+					<font fontName="Nikosh" size="16"/>
+				</textElement>
+				<text><![CDATA[বরাবর
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="35" y="70" width="245" height="20" uuid="bc8d4758-d164-4ee0-ac4a-ecb9ac3507e4"/>
+				<textElement>
+					<font fontName="Nikosh" size="16"/>
+				</textElement>
+				<text><![CDATA[ব্যবস্থাপক]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="35" y="93" width="245" height="20" uuid="64870b70-09e8-4405-86c1-a7e2fb55d610"/>
+				<textElement>
+					<font fontName="Nikosh" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ZONE}+", রাজস্ব বিভাগ,"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="35" y="116" width="345" height="20" uuid="16d82748-9130-4c3f-9973-54f3a291fed2"/>
+				<textElement>
+					<font fontName="Nikosh" size="16"/>
+				</textElement>
+				<text><![CDATA[কর্ণফুলী গ্যাস ডিস্ট্রিবিউশন কোম্পানী লিমিটেড, চট্টগ্রাম ।]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="32" y="160" width="495" height="20" uuid="327d53df-96dc-4b61-b135-34c9c4906f5e"/>
+				<textElement textAlignment="Center">
+					<font fontName="Nikosh" size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[বিষয়ঃ পুনঃসংযোগের আবেদন ।]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="252" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement x="32" y="0" width="245" height="20" uuid="93a9b5e8-b160-46a9-8dbd-f888cdee7c08"/>
+				<textElement>
+					<font fontName="Nikosh" size="16"/>
+				</textElement>
+				<text><![CDATA[জনাব,
+]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="32" y="26" width="495" height="104" uuid="eb83d985-197a-4e29-9d64-89c3deaf78f1"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Nikosh" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA["সবিনয়ে বিনীত নিবেদন এই যে, গত "+$F{DISCONNECTION_DATE}+" ইং তারিখে আমার গ্যাস সংযোগ বিচ্ছিন্ন করা হয়। \n\nএমতাবস্থায় আমার বিচ্ছিন্নকৃত লাইনটি পুনঃসংযোগ প্রদান করিলে মহোদয়ের কাছে কৃতজ্ঞ থাকিব।"]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement x="32" y="130" width="493" height="122" uuid="d0ad4904-b5fa-4b63-8fc2-f6cf72e35708"/>
+				<staticText>
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="493" height="25" uuid="ce0f7af9-634f-4e3f-a1dd-f2f487a215e1"/>
+					<textElement>
+						<font fontName="Nikosh" size="16"/>
+					</textElement>
+					<text><![CDATA[নিবেদক]]></text>
+				</staticText>
+				<textField>
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="30" width="493" height="25" uuid="ec337a59-7cbb-4074-ba25-60ab4396bae7"/>
+					<textElement>
+						<font fontName="Calibri" size="16"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CODE}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="57" width="493" height="25" uuid="87ca8df1-1dc1-4d1e-96b3-b15363766392"/>
+					<textElement>
+						<font fontName="Calibri" size="16"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{CUST_NAME}]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement stretchType="ContainerHeight" x="0" y="85" width="493" height="37" uuid="01bd5080-b6ce-46a9-8b40-2d52486fb195"/>
+					<textElement>
+						<font fontName="Calibri" size="16"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ADDRESS}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="108" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="90" width="555" height="18" uuid="60c082f3-b8dd-4817-9546-bc38d53fec8c"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Note: This reconnection application is generated from the KGDCL customer portal.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="32" y="0" width="245" height="20" uuid="d5f5b6c9-22df-4881-8a9c-3ac4634e745b"/>
+				<textElement>
+					<font fontName="Nikosh" size="16"/>
+				</textElement>
+				<text><![CDATA[সংযুক্তিঃ
+]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="32" y="39" width="495" height="30" uuid="9049c3ac-6b61-4b69-b69c-fc4f60822683"/>
+				<textElement>
+					<font fontName="Nikosh" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA["০১। "+$P{ATTACHED_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

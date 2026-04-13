@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Pay Bill</title>
+  <link rel="stylesheet" href="/static/css/pay-bill.css">
+</head>
+<body>
+<th:block layout:fragment="content">
+  <section th:if="${isNonMeterCustomer}" class="content mt-2">
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-md-12">
+          <div class="card card-outline card-purple">
+            <div class="card-header">
+              <h2 class="card-title text-purple"><i class="fas fa-dollar-sign"></i> Select payment method</P></h2>
+            </div>
+            <div class="card-body">
+              <!--/*@thymesVar id="isImpersonating" type="java.lang.Boolean"*/-->
+              <div th:if="${isImpersonating}" class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                You are currently impersonating a user. You cannot make payment while impersonating.
+              </div>
+              <div class="row plans">
+                <div class="row plans">
+                  <div th:each="paymentMethod : ${paymentMethods}" class="col-md-4 col-sm-12">
+                    <label th:class="'plan ' + ${paymentMethod.name}" th:for="${paymentMethod.name}">
+                      <input type="radio" th:checked="${paymentMethod.isChecked()}" th:value="${paymentMethod.cardType}" name="paymentMethod" th:id="${paymentMethod.name}"/>
+                      <div class="plan-content">
+                        <img loading="lazy" th:src="${paymentMethod.image}">
+                        <div class="plan-details">
+                          <span th:text="${paymentMethod.name}"></span>
+                          <p th:text=" ${paymentMethod.description}"></p>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="terms-and-conditions">
+                    <h6 class="text-bold">Terms and Conditions</h6>
+                    <ul class="terms-list">
+                      <li class="list-item">Must have sufficient balance in account</li>
+                      <li class="list-item">Transactions conducted between 11:30 PM and 12:00 AM are discouraged. KGDCL will not be responsible for surcharge added to bill amount for transactions occurring after 12:00 AM.</li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-sm-6 float-right card" id="paymentInfoSec">
+                  <ul class="nav flex-column">
+                    <li class="nav-item">
+                      <div class="nav-link text-primary">
+                        Payment Reference:
+                        <span class="float-right text-dark text-bold" id="paymentRef"></span>
+                      </div>
+                    </li>
+                    <li class="nav-item">
+                      <div class="nav-link text-primary">
+                        Pay Amount <span class="float-right  text-dark text-bold" id="payAmount"></span>
+                      </div>
+                    </li>
+                    <li class="nav-item">
+                      <div class="nav-link text-primary">
+                        Fee <span class="float-right text-dark text-bold " id="fee"></span>
+                      </div>
+                    </li>
+                    <li class="nav-item">
+                      <div class="nav-link text-primary">
+                        Total Amount <span class="float-right text-dark text-bold" id="totalAmount"></span>
+                      </div>
+                    </li>
+                    <li class="nav-item">
+                      <div class="nav-link">
+                        <input type="checkbox" name="termCondition" id="termCondition" onclick="">
+                        <label>I have accepted all terms and conditions.</label>.
+                      </div>
+                    </li>
+                  </ul>
+                  <button type="button" id="payNowBtn" class="btn btn-block btn-warning text-bold disabled"><i class="fas fa-dollar-sign"></i>
+                    Pay Now </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section th:unless="${isNonMeterCustomer}" class="content mt-2">
+    <div class="container-fluid">
+      <h5 class="text-center">Currently, bill payment is not allowed for metered customer</h5>
+    </div>
+  </section>
+</th:block>
+
+<th:block layout:fragment="script">
+  <script th:src="@{/static/js/bill/calculatedbblfee.js}"></script>
+  <script th:src="@{/static/js/bill/pay-bill.js}"></script>
+</th:block>
+</body>
+</html>

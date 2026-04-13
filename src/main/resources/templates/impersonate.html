@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Impersonate Customer</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+  <section class="content mt-2">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12 mx-auto">
+          <div class="card card-outline card-primary">
+            <div class="card-header">
+              <h2 class="card-title text-primary"><i class="fas fa-lock-open"></i> Login As Customer</h2>
+            </div>
+            <div class="card-body">
+              <form th:action="@{/impersonate}" method="post">
+                <div class="form-group">
+                  <label for="username">Customer Code</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control text-uppercase" id="username" name="username"
+                           placeholder="Enter customer code you want to login as" required>
+                  </div>
+                  <span th:if="${param.error}" style="color: red;"><br>Invalid customer code or the customer is not registered in portal</span>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</th:block>
+</body>

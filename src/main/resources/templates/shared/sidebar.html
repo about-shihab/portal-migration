@@ -1,0 +1,61 @@
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <!-- Brand Logo -->
+  <a href="/profile" class="brand-link">
+    <img src="/static/images/kgdcl_logo.png" alt="KGDCL Logo" class="brand-image img-circle elevation-2 float-none"
+         style="opacity: .8">
+    <span class="text-bold text-weight-light brand-text text-md">Customer Billing Portal</span>
+  </a>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="info">
+        <a href="#" class="d-block">Logged in as: <span th:text="${loggedInUser}" id="username" class="text-sm"></span></a>
+      </div>
+    </div>
+    <!-- SidebarSearch Form -->
+    <div class="form-inline mt-2">
+      <div class="input-group" data-widget="sidebar-search">
+        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+        <div class="input-group-append">
+          <button class="btn btn-sidebar">
+            <i class="fas fa-search fa-fw"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Sidebar Menu -->
+    <nav class="mt-3">
+      <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent nav-compact" data-widget="treeview"
+          role="menu"
+          data-accordion="false">
+        <th:block th:each="menuItem : ${menuItems}">
+          <li class="nav-item"
+              th:classappend="${menuItem.active ? 'menu-is-opening menu-open' :''}">
+            <a th:href="@{${menuItem.url}}" class="nav-link"
+               th:classappend="${menuItem.active ? 'active' : ''}">
+              <i class="nav-icon" th:classappend="${menuItem.icon}"></i>
+              <p th:text="${menuItem.name}"></p>
+              <i th:if="${!#lists.isEmpty(menuItem.children)}"
+                 class="right fas fa-angle-left"></i>
+            </a>
+            <ul th:if="${!#lists.isEmpty(menuItem.children)}" class="nav-item nav-treeview">
+              <th:block th:each="subMenuItem : ${menuItem.children}">
+                <li class="nav-item">
+                  <a th:href="@{${subMenuItem.url}}" class="nav-link"
+                     th:classappend="${subMenuItem.active ? 'active' : ''}">
+                    <i class="nav-icon" th:classappend="${subMenuItem.icon}"></i>
+                    <p th:text="${subMenuItem.name}"></p>
+                  </a>
+                </li>
+              </th:block>
+            </ul>
+          </li>
+        </th:block>
+      </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+  </div>
+  <!-- /.sidebar -->
+</aside>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report_title" language="groovy" pageWidth="360" pageHeight="842" columnWidth="360" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d283c0fb-4dde-4c45-ab22-c1c38728a039">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[/* Formatted on 10/14/2018 11:58:56 AM (QP5 v5.227.12220.39754) */
+SELECT CD.COMPANY_NAME,
+       CD.MOTHER_CONPANY,
+       CD.COMPANY_ADDRESS_1,
+       CD.COMPANY_ADDREAA_2,
+       CD.COMPANY_ADDRESS_3,
+       CD.COMPANY_SHROT_NAME,
+       CD.COMPANY_VAT_REG_NO,
+       CD.COMPANY_AREA_CODE
+  FROM COMPANY_DETAILS cd
+ WHERE CD.IS_ACTIVE = 1]]>
+	</queryString>
+	<field name="COMPANY_NAME" class="java.lang.String"/>
+	<field name="MOTHER_CONPANY" class="java.lang.String"/>
+	<field name="COMPANY_ADDRESS_1" class="java.lang.String"/>
+	<field name="COMPANY_ADDREAA_2" class="java.lang.String"/>
+	<field name="COMPANY_ADDRESS_3" class="java.lang.String"/>
+	<field name="COMPANY_SHROT_NAME" class="java.lang.String"/>
+	<field name="COMPANY_VAT_REG_NO" class="java.lang.String"/>
+	<field name="COMPANY_AREA_CODE" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="55">
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="360" height="19" uuid="c65f87f8-03db-4e2b-818b-9b3794e03572"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COMPANY_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="19" width="360" height="12" uuid="11ef0366-b64d-4cbd-95f7-fed41afe711e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["( "+$F{MOTHER_CONPANY}+" )"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="31" width="360" height="12" uuid="55ff2dbb-0d65-49b5-a3a9-7809599c6eb9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COMPANY_ADDRESS_1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="43" width="360" height="12" uuid="8ff9e2ae-ee76-459f-a21b-c1701c072bb3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{COMPANY_ADDREAA_2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.3.final using JasperReports Library version 6.20.3-415f9428cffdb6805c6f85bbb29ebaf18813a2ab  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="duplicate_reg_card" pageWidth="504" pageHeight="360" columnWidth="464" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="10" uuid="6e163873-e7da-48c1-a9b7-0cddd2da4d8c">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="erp_test"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="cust_code" class="java.lang.String"/>
+	<parameter name="duplicate" class="java.lang.String"/>
+	<parameter name="IMAGE_DIR" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT mv.code
+     , mv.pre_cust_code 
+     , ct.title as cust_type
+     , mv.cust_name
+     , mv.zone
+     , mv.mobile_no
+     , mv.address
+     , TO_CHAR(SYSDATE, 'dd/mm/yyyy hh:mi AM')  AS current_date
+  FROM meter_unoin_dom_cust_view mv
+ LEFT JOIN cust_type ct ON mv.cust_type_id = ct.id
+ WHERE mv.code = $P{cust_code}]]>
+	</queryString>
+	<field name="CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CODE"/>
+		<property name="com.jaspersoft.studio.field.label" value="CODE"/>
+	</field>
+	<field name="PRE_CUST_CODE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="PRE_CUST_CODE"/>
+		<property name="com.jaspersoft.studio.field.label" value="PRE_CUST_CODE"/>
+	</field>
+	<field name="CUST_TYPE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CUST_TYPE"/>
+		<property name="com.jaspersoft.studio.field.label" value="CUST_TYPE"/>
+	</field>
+	<field name="CUST_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CUST_NAME"/>
+		<property name="com.jaspersoft.studio.field.label" value="CUST_NAME"/>
+	</field>
+	<field name="ZONE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ZONE"/>
+		<property name="com.jaspersoft.studio.field.label" value="ZONE"/>
+	</field>
+	<field name="MOBILE_NO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="MOBILE_NO"/>
+		<property name="com.jaspersoft.studio.field.label" value="MOBILE_NO"/>
+	</field>
+	<field name="ADDRESS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ADDRESS"/>
+		<property name="com.jaspersoft.studio.field.label" value="ADDRESS"/>
+	</field>
+	<field name="CURRENT_DATE" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="CURRENT_DATE"/>
+		<property name="com.jaspersoft.studio.field.label" value="CURRENT_DATE"/>
+	</field>
+	<group name="CODE">
+		<groupExpression><![CDATA[$F{CODE}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="121" splitType="Stretch">
+			<staticText>
+				<reportElement x="101" y="43" width="234" height="20" uuid="b5822a30-9ee2-466f-bf37-91f29a975fb7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[কর্ণফুলী গ্যাস ডিস্ট্রিবিউশন কোম্পানি লিমিটেড]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="101" y="63" width="234" height="20" uuid="ff0efbc0-3794-498d-80b2-420ecf6bc1a6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[( পেট্রোবাংলার একটি কোম্পানী )]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="101" y="83" width="234" height="20" uuid="771665f3-cecd-482d-b903-edcb2f4f042c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[প্রধান কার্যালয়, ১৩৭/এ সিডিএ এভিনিউ, ষোলশহর, চট্টগ্রাম।]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="335" y="105" width="121" height="16" uuid="fa613904-0e87-443f-9e87-0a8b82796c17"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12"/>
+				</textElement>
+				<text><![CDATA[গ্রাহক কপি]]></text>
+			</staticText>
+			<image>
+				<reportElement x="33" y="43" width="67" height="58" uuid="649cccce-0dbf-499a-b934-8238b659d4f2"/>
+				<imageExpression><![CDATA[$P{IMAGE_DIR}+File.separator+"h.jpg"]]></imageExpression>
+			</image>
+			<componentElement>
+				<reportElement x="340" y="43" width="113" height="61" uuid="0953461c-777f-4093-96db-6e9d746efe93"/>
+				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<jr:codeExpression><![CDATA["Name: "+$F{CUST_NAME}+" , Code: "+$F{CODE}+" , Manual Code: "+$F{PRE_CUST_CODE}+" , Address: "+$F{ADDRESS}+" , Mobile No: "+$F{MOBILE_NO}+" , Issued: "+$F{CURRENT_DATE}]]></jr:codeExpression>
+				</jr:QRCode>
+			</componentElement>
+			<textField>
+				<reportElement x="163" y="105" width="121" height="14" uuid="602ed8a2-f4b1-498e-9fb0-1369314865c5"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{duplicate}=="1"? "Duplicate":""]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="44" splitType="Stretch">
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="18" y="24" width="90" height="20" uuid="aaf61b77-1c8e-4e40-916e-abcc6533a68b"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[জোন]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="108" y="24" width="116" height="20" uuid="4bb69a76-5ca3-49ec-b24a-15a50fdce05d"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[নতুন গ্রাহক সংকেত]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="224" y="24" width="116" height="20" uuid="36d8641d-a035-42c6-850f-180c69d23632"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[পুরাতন গ্রাহক সংকেত]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="340" y="24" width="124" height="20" uuid="507f0ed5-06be-49ae-b99a-8c9f8303830f"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[এই মোবাইল নম্বর সচল রাখুন]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="18" y="2" width="102" height="22" uuid="539f5dbc-4631-49fb-930d-f73b407917cf"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[গ্রাহকের নাম]]></text>
+			</staticText>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="120" y="2" width="344" height="22" uuid="0fce0764-9c1e-4ee3-96fc-12f7fc524e6a"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="12"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CUST_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="152" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="18" y="0" width="90" height="20" uuid="45825fcd-13cb-4140-95e5-a1b0bff7334c"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ZONE}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="108" y="0" width="116" height="20" uuid="0f3f29f3-c070-4d94-825c-9f0d0e75bdfa"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CODE}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="224" y="0" width="116" height="20" uuid="4b420892-0c83-476d-8bf1-506cb4125425"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PRE_CUST_CODE}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="340" y="0" width="124" height="20" uuid="9e043c91-b697-449a-8748-824b52c83865"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{MOBILE_NO}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="18" y="21" width="102" height="33" uuid="ce549049-47aa-4452-aaf9-891cc2d04277"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[গ্রাহকের ঠিকানা]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="RelativeToBandHeight" x="120" y="21" width="344" height="33" uuid="50f5673e-b987-41a2-9b1e-2115af20f9fd"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+					<paragraph leftIndent="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ADDRESS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="18" y="83" width="90" height="16" uuid="7ef7d9ca-74d4-4e27-b2e5-f7297f695594"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[তারিখ]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight" pattern="dd/MM/yyyy h.mm a">
+				<reportElement stretchType="RelativeToBandHeight" x="108" y="83" width="132" height="16" uuid="e53611dc-8b3c-4933-bd64-c13a80a00e13"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CURRENT_DATE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="18" y="62" width="222" height="16" uuid="1ce0d3fc-bf71-4d81-9473-94d00c029dfb"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<text><![CDATA[আপনার রেজিষ্ট্রেশন সম্পন্ন করা হয়েছে।]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="240" y="54" width="95" height="16" uuid="e3dcbbf6-b4a9-4983-93a4-8cb4e294e593"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Customer Type: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement stretchType="RelativeToBandHeight" x="335" y="54" width="129" height="16" uuid="62edbea5-c50a-474e-8549-d6d46b95aa1a"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+					<paragraph leftIndent="2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CUST_TYPE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="18" y="113" width="222" height="15" uuid="4554d9a6-fcc2-4442-9dd6-efd2174ca339"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="12" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[বিঃদ্রঃ এই কার্ডটি গ্রাহকের মালিকানাস্বত্ব বহন করে না।]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="137" width="464" height="15" uuid="490c5b6f-2472-4d4b-acfd-3c7dc583a171"/>
+				<box>
+					<pen lineWidth="0.0"/>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Nikosh" size="8"/>
+				</textElement>
+				<text><![CDATA[Note: This is a computer generated online registration card and does not require any signature]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

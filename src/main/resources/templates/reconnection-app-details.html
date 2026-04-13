@@ -1,0 +1,65 @@
+<h4>Reconnection Application Details</h4>
+<hr>
+<dl class="row">
+    <dt class="col-sm-4">Customer Code:</dt>
+    <dd class="col-sm-8"><span th:text="${reconnectionApplication.customerCode}"></span></dd>
+
+    <dt class="col-sm-4">Application Date:</dt>
+    <dd class="col-sm-8"><span
+            th:text="${#dates.format(reconnectionApplication.applicationDate, 'dd MMMM yyyy, hh:mm a')}"></span></dd>
+
+    <dt class="col-sm-4">Disconnection Date:</dt>
+    <dd class="col-sm-8"><span
+            th:text="${#dates.format(reconnectionApplication.disconnectionDate, 'dd MMMM yyyy')}"></span></dd>
+
+    <dt class="col-sm-4">Zone:</dt>
+    <dd class="col-sm-8"><span th:text="${reconnectionApplication.zone}"></span></dd>
+
+    <dt class="col-sm-4">Status:</dt>
+    <dd class="col-sm-8"><span th:text="${reconnectionApplication.status}"></span></dd>
+
+    <dt class="col-sm-4">Remarks:</dt>
+    <dd class="col-sm-8"><span th:text="${reconnectionApplication.remarks}"></span></dd>
+</dl>
+
+<h4>Attachments</h4>
+<hr>
+<table class="table table-responsive-sm table-hover table-borderless">
+    <thead class="bg-gradient-light">
+    <tr>
+        <th>File Title</th>
+        <th>File Name</th>
+        <th>File Size</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${reconnectionApplication.attachmentFileInfo != null}">
+        <td>Bill Attachment</td>
+        <td><span th:text="${reconnectionApplication.attachmentFileInfo.name}"></span></td>
+        <td><span
+                th:text="${#numbers.formatDecimal(reconnectionApplication.attachmentFileInfo.size / 1024.0, 1, 2)}"></span>
+            KB
+        </td>
+        <td>
+            <a th:href="@{/reconnection/files/download/{fileId}(fileId=${reconnectionApplication.attachmentFileInfo.id})}"
+               class="btn btn-primary btn-sm">
+                <i class="fas fa-download"></i> Download
+            </a>
+        </td>
+    </tr>
+    <tr th:if="${reconnectionApplication.appFileInfo != null}">
+        <td>Reconnection Application PDF</td>
+        <td><span th:text="${reconnectionApplication.appFileInfo.name}"></span></td>
+        <td><span th:text="${#numbers.formatDecimal(reconnectionApplication.appFileInfo.size / 1024.0, 1, 2)}"></span>
+            KB
+        </td>
+        <td>
+            <a th:href="@{/reconnection/files/download/{fileId}(fileId=${reconnectionApplication.appFileInfo.id})}"
+               class="btn btn-primary btn-sm">
+                <i class="fas fa-download"></i> Download
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>

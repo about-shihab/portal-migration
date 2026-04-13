@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Bill Collection</title>
+  <link href="https://code.jquery.com/ui/1.10.4/themes/cupertino/jquery-ui.css" rel="stylesheet">
+</head>
+<body>
+<th:block layout:fragment="content">
+  <section class="content mt-2">
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-md-12">
+          <div class="card card-outline card-purple">
+            <div class="card-header">
+              <h2 class="card-title text-purple"><i class="fas fa-money-bill-wave"></i> Bill Collection Report</h2>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="overlay-wrapper">
+                  <div class="overlay" id="overlay" style="display: none">
+                    <i class="fas fa-3x fa-sync-alt fa-spin"></i>
+                    <div class="text-bold pt-2">Loading...</div>
+                  </div>
+                </div>
+                <form id="billCollectionForm" onsubmit="return false;" class="col-md-8 mx-auto">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-info border-info">From Date</span>
+                        </div>
+                        <input type="text" id="startDate" name="startDate" autocomplete="off" placeholder="dd-mm-yyyy" class="form-control"
+                               required>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-info border-info">To Date</span>
+                        </div>
+                        <input type="text" id="endDate" name="endDate" autocomplete="off" placeholder="dd-mm-yyyy" class="form-control"
+                               required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 text-center mt-3">
+                    <button type="submit" class="btn btn-primary submitBtn">Submit</button>
+                  </div>
+                </form>
+              </div>
+              <div class="row mt-4" id="pdfContainer" style="display: none">
+                <iframe id="pdfViewer" width="100%" height="500px" style="border: 1px solid #ccc;"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+</th:block>
+<th:block layout:fragment="script">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+  <script src="/static/js/bill/collection.js"></script>
+</th:block>
+</body>
+</html>
