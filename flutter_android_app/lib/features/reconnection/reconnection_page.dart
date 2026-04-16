@@ -41,7 +41,7 @@ class _ReconnectionPageState extends State<ReconnectionPage> {
                 decoration: const InputDecoration(labelText: 'Reason for reconnection'),
               ),
               const SizedBox(height: 12),
-              FilledButton(onPressed: _submit, child: const Text('Submit Request')),
+              ElevatedButton(onPressed: _submit, child: const Text('Submit Request')),
             ],
           ),
         ),

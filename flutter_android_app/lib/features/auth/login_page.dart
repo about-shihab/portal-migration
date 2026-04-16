@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 16),
                   if (error != null) Text(error!, style: const TextStyle(color: Colors.red)),
                   const SizedBox(height: 6),
-                  FilledButton.icon(
+                  ElevatedButton.icon(
                     onPressed: loading ? null : _login,
                     icon: loading
                         ? const SizedBox(

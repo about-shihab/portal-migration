@@ -46,12 +46,12 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              FilledButton.tonal(onPressed: _info, child: const Text('Load Profile')),
+              OutlinedButton(onPressed: _info, child: const Text('Load Profile')),
               const SizedBox(height: 12),
               TextField(controller: oldPassword, decoration: const InputDecoration(labelText: 'Old password')),
               TextField(controller: newPassword, decoration: const InputDecoration(labelText: 'New password')),
               const SizedBox(height: 12),
-              FilledButton(onPressed: _changePassword, child: const Text('Change Password')),
+              ElevatedButton(onPressed: _changePassword, child: const Text('Change Password')),
             ],
           ),
         ),

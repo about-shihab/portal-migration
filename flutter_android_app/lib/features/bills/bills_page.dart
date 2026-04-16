@@ -35,15 +35,15 @@ class _BillsPageState extends State<BillsPage> {
             spacing: 8,
             runSpacing: 8,
             children: <Widget>[
-              FilledButton(
+              ElevatedButton(
                 onPressed: () => _load(ApiEndpoints.unpaidBills),
                 child: const Text('Unpaid Bills'),
               ),
-              FilledButton.tonal(
+              OutlinedButton(
                 onPressed: () => _load(ApiEndpoints.billHistory),
                 child: const Text('Bill History'),
               ),
-              FilledButton.tonal(
+              OutlinedButton(
                 onPressed: () => _load(ApiEndpoints.billCollection),
                 child: const Text('Collection Report'),
               ),

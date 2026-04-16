@@ -24,7 +24,7 @@ class _RegistrationCardPageState extends State<RegistrationCardPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              FilledButton.tonal(
+              OutlinedButton(
                 onPressed: () async {
                   final data = await apiFor(context).postJson(ApiEndpoints.registrationRequest, <String, dynamic>{});
                   setState(() => output = data.toString());
@@ -34,7 +34,7 @@ class _RegistrationCardPageState extends State<RegistrationCardPage> {
               const SizedBox(height: 10),
               TextField(controller: otpController, decoration: const InputDecoration(labelText: 'OTP')),
               const SizedBox(height: 10),
-              FilledButton(
+              ElevatedButton(
                 onPressed: () async {
                   final data = await apiFor(context)
                       .postJson(ApiEndpoints.registrationOtp, <String, dynamic>{'otp': otpController.text.trim()});

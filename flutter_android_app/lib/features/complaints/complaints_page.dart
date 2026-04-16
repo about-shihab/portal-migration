@@ -48,8 +48,8 @@ class _ComplaintsPageState extends State<ComplaintsPage> {
                 spacing: 8,
                 runSpacing: 8,
                 children: <Widget>[
-                  FilledButton.tonal(onPressed: _loadCauses, child: const Text('Load Causes')),
-                  FilledButton.tonal(
+                  OutlinedButton(onPressed: _loadCauses, child: const Text('Load Causes')),
+                  OutlinedButton(
                     onPressed: () async {
                       final data = await apiFor(context).getJson(ApiEndpoints.complaintTickets);
                       setState(() => output = data.toString());
@@ -66,7 +66,7 @@ class _ComplaintsPageState extends State<ComplaintsPage> {
                 decoration: const InputDecoration(labelText: 'Complaint description'),
               ),
               const SizedBox(height: 10),
-              FilledButton(onPressed: _create, child: const Text('Submit Complaint')),
+              ElevatedButton(onPressed: _create, child: const Text('Submit Complaint')),
             ],
           ),
         ),

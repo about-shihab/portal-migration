@@ -34,7 +34,7 @@ class _CertificatePageState extends State<CertificatePage> {
             children: <Widget>[
               const Text('This mirrors the certificate feature from the Spring portal.'),
               const SizedBox(height: 12),
-              FilledButton.icon(
+              ElevatedButton.icon(
                 onPressed: _downloadCertificate,
                 icon: const Icon(Icons.download),
                 label: const Text('Download Certificate'),

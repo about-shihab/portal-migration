@@ -39,3 +39,12 @@ flutter run -d android
 ```
 
 By default, Android emulator backend URL is set to `http://10.0.2.2:8080`.
+
+### Optional: enable web target
+
+If you want to run with `flutter run -d chrome`, first generate web platform files:
+
+```bash
+flutter create .
+flutter run -d chrome
+```
