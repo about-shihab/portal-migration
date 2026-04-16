@@ -1,5 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/stored_session.dart';
+
 class SessionStore {
   static const String _tokenKey = 'auth_token';
   static const String _userKey = 'auth_user';
@@ -10,14 +12,14 @@ class SessionStore {
     await prefs.setString(_userKey, username);
   }
 
-  Future<(String, String)?> load() async {
+  Future<StoredSession?> load() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString(_tokenKey);
     final user = prefs.getString(_userKey);
     if (token == null || token.isEmpty) {
       return null;
     }
-    return (token, user ?? '');
+    return StoredSession(token: token, username: user ?? '');
   }
 
   Future<void> clear() async {

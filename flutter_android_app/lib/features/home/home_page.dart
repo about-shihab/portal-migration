@@ -9,7 +9,7 @@ import '../reconnection/reconnection_page.dart';
 import '../registration_card/registration_card_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -41,16 +41,17 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: _pages[index],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: index,
-        onDestinationSelected: (int value) => setState(() => index = value),
-        destinations: const <NavigationDestination>[
-          NavigationDestination(icon: Icon(Icons.receipt_long), label: 'Bills'),
-          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
-          NavigationDestination(icon: Icon(Icons.support_agent), label: 'Complaint'),
-          NavigationDestination(icon: Icon(Icons.file_download), label: 'Certificate'),
-          NavigationDestination(icon: Icon(Icons.badge), label: 'Reg Card'),
-          NavigationDestination(icon: Icon(Icons.power), label: 'Reconnect'),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: index,
+        onTap: (int value) => setState(() => index = value),
+        type: BottomNavigationBarType.fixed,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: 'Bills'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.support_agent), label: 'Complaint'),
+          BottomNavigationBarItem(icon: Icon(Icons.file_download), label: 'Certificate'),
+          BottomNavigationBarItem(icon: Icon(Icons.badge), label: 'Reg Card'),
+          BottomNavigationBarItem(icon: Icon(Icons.power), label: 'Reconnect'),
         ],
       ),
     );

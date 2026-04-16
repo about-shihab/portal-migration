@@ -13,7 +13,7 @@ class AppState extends ChangeNotifier {
   Future<void> bootstrap() async {
     final stored = await _sessionStore.load();
     if (stored != null) {
-      session = Session(token: stored.$1, username: stored.$2);
+      session = Session(token: stored.token, username: stored.username);
     }
     loading = false;
     notifyListeners();

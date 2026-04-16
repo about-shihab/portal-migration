@@ -5,7 +5,7 @@ import '../../core/app_api.dart';
 import '../../widgets/api_card.dart';
 
 class RegistrationCardPage extends StatefulWidget {
-  const RegistrationCardPage({super.key});
+  const RegistrationCardPage({Key? key}) : super(key: key);
 
   @override
   State<RegistrationCardPage> createState() => _RegistrationCardPageState();

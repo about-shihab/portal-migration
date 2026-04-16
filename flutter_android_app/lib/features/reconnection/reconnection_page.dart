@@ -5,7 +5,7 @@ import '../../core/app_api.dart';
 import '../../widgets/api_card.dart';
 
 class ReconnectionPage extends StatefulWidget {
-  const ReconnectionPage({super.key});
+  const ReconnectionPage({Key? key}) : super(key: key);
 
   @override
   State<ReconnectionPage> createState() => _ReconnectionPageState();

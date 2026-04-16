@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class ApiCard extends StatelessWidget {
   const ApiCard({
+    Key? key,
     required this.title,
     required this.child,
-    super.key,
-  });
+  }) : super(key: key);
 
   final String title;
   final Widget child;

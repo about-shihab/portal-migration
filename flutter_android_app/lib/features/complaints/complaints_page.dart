@@ -5,7 +5,7 @@ import '../../core/app_api.dart';
 import '../../widgets/api_card.dart';
 
 class ComplaintsPage extends StatefulWidget {
-  const ComplaintsPage({super.key});
+  const ComplaintsPage({Key? key}) : super(key: key);
 
   @override
   State<ComplaintsPage> createState() => _ComplaintsPageState();

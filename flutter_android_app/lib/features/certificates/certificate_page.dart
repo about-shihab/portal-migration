@@ -5,7 +5,7 @@ import '../../core/app_api.dart';
 import '../../widgets/api_card.dart';
 
 class CertificatePage extends StatefulWidget {
-  const CertificatePage({super.key});
+  const CertificatePage({Key? key}) : super(key: key);
 
   @override
   State<CertificatePage> createState() => _CertificatePageState();

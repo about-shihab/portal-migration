@@ -19,9 +19,16 @@ The Flutter app maps those API groups into mobile screens:
 ## Modern Android UI approach
 
 - Material 3 design system
-- Mobile-first navigation using `NavigationBar`
+- Mobile-first navigation using `BottomNavigationBar`
 - Feature cards with concise actions and scrollable response panes
 - Persisted auth session using `shared_preferences`
+
+## Required Flutter version
+
+- Flutter **2.10.5** (stable)
+- Dart **2.16.x**
+
+This project intentionally avoids Dart 3-only language features so it can run on Flutter 2.10.5.
 
 ## Run
 
