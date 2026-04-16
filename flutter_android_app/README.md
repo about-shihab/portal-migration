@@ -38,7 +38,9 @@ flutter pub get
 flutter run -d android
 ```
 
-By default, Android emulator backend URL is set to `http://10.0.2.2:8080`.
+By default, API URLs are configured from `UrlUtils`:
+- Auth base: `http://api.kgdcl.gov.bd:8050/kgdclApps/api/`
+- API v1 base: `http://api.kgdcl.gov.bd:8050/kgdclApps/api/v1/`
 
 ### Optional: enable web target
 

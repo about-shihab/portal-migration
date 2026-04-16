@@ -4,6 +4,7 @@ import '../../core/api_endpoints.dart';
 import '../../main.dart';
 import '../../models/session.dart';
 import '../../services/api_service.dart';
+import '../../core/url_utils.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
       error = null;
     });
     try {
-      final api = ApiService(baseUrl: 'http://10.0.2.2:8080');
+      final api = ApiService(baseUrl: UrlUtils.authBaseUrl);
       final payload = await api.postJson(ApiEndpoints.login, <String, dynamic>{
         'username': usernameController.text.trim(),
         'password': passwordController.text,
